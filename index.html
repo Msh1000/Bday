@@ -1,208 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Happy Birthday!</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poiret+One&display=swap');
-
-    body {
-      margin: 0;
-      height: 100vh;
-      background:
-        radial-gradient(ellipse at center, #0d0d1a 0%, #0b1020 80%),
-        linear-gradient(135deg, #1a1a1a, #333);
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Poiret One', cursive, sans-serif;
-      position: relative;
-      color: #fff;
-    }
-
-    #stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: transparent;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    h1 {
-      font-size: 5rem;
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      user-select: none;
-      padding: 0 1rem;
-      color: hsl(0, 70%, 55%);
-      animation: pulseGlow 2s infinite ease-in-out, colorFade 10s infinite linear, textBounce 2s infinite ease-in-out;
-      text-shadow:
-        0 0 5px rgba(255, 255, 255, 0.2),
-        0 0 10px rgba(255, 255, 255, 0.15),
-        0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% {
-        text-shadow:
-          0 0 5px rgba(255, 255, 255, 0.2),
-          0 0 10px rgba(255, 255, 255, 0.15),
-          0 0 15px rgba(255, 255, 255, 0.1);
-      }
-      50% {
-        text-shadow:
-          0 0 8px rgba(255, 255, 255, 0.3),
-          0 0 16px rgba(255, 255, 255, 0.2),
-          0 0 25px rgba(255, 255, 255, 0.15);
-      }
-    }
-
-    @keyframes colorFade {
-      0% { color: hsl(0, 70%, 55%); }
-      25% { color: hsl(90, 70%, 55%); }
-      50% { color: hsl(180, 70%, 55%); }
-      75% { color: hsl(270, 70%, 55%); }
-      100% { color: hsl(360, 70%, 55%); }
-    }
-
-    @keyframes textBounce {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-
-    canvas#confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 5;
-      pointer-events: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 5vh;
+            background: linear-gradient(135deg, #2b0a3d, #1a1a4e, #3c1053);
+            font-family: 'Dancing Script', cursive;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            color: #ffffff;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 2s ease-in;
+            max-width: 80%;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 4.5rem;
+            margin: 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            animation: bounceIn 1.5s ease;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            animation: slideIn 2s ease;
+        }
+        .balloons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: #ffffff;
+            transform: translateX(-50%);
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.1); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+    </style>
 </head>
 <body>
-  <h1>🎉 Happy Birthday! 🎂</h1>
-  <canvas id="stars"></canvas>
-  <canvas id="confetti"></canvas>
-
-  <script>
-    const starCanvas = document.getElementById('stars');
-    const starCtx = starCanvas.getContext('2d');
-    let starWidth, starHeight;
-    let stars = [];
-
-    function createStars() {
-      stars = [];
-      for(let i = 0; i < 200; i++) {
-        stars.push({
-          x: Math.random() * starWidth,
-          y: Math.random() * starHeight,
-          radius: Math.random() * 1.2,
-          alpha: Math.random(),
-          alphaChange: 0.005 + Math.random() * 0.015
-        });
-      }
-    }
-
-    function drawStars() {
-      starCtx.clearRect(0, 0, starWidth, starHeight);
-      stars.forEach(star => {
-        star.alpha += star.alphaChange;
-        if (star.alpha <= 0 || star.alpha >= 1) star.alphaChange *= -1;
-        starCtx.beginPath();
-        starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        starCtx.fillStyle = `rgba(255,255,255,${star.alpha.toFixed(2)})`;
-        starCtx.fill();
-      });
-      requestAnimationFrame(drawStars);
-    }
-
-    function resizeStars() {
-      starWidth = window.innerWidth;
-      starHeight = window.innerHeight;
-      starCanvas.width = starWidth;
-      starCanvas.height = starHeight;
-      createStars();
-    }
-
-    window.addEventListener('resize', resizeStars);
-    resizeStars();
-    drawStars();
-
-    const confettiCanvas = document.getElementById('confetti');
-    const ctx = confettiCanvas.getContext('2d');
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-
-    const confettiColors = ['#ff3399', '#66ccff', '#ffff66', '#ccff66', '#ff9966', '#ff55aa', '#55ffcc', '#ffaa55'];
-
-    class Confetti {
-      constructor() {
-        this.x = Math.random() * confettiCanvas.width;
-        this.y = Math.random() * confettiCanvas.height;
-        this.size = (Math.random() * 7) + 4;
-        this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
-        this.tilt = Math.random() * 10 - 5;
-        this.tiltAngle = 0;
-        this.tiltAngleIncrement = (Math.random() * 0.1) + 0.05;
-        this.speedY = (Math.random() * 5) + 4;
-        this.rotation = Math.random() * 360;
-        this.rotationSpeed = (Math.random() - 0.5) * 8;
-      }
-      update() {
-        this.y += this.speedY;
-        this.tiltAngle += this.tiltAngleIncrement;
-        this.tilt = Math.sin(this.tiltAngle) * 15;
-        this.rotation += this.rotationSpeed;
-
-        if (this.y > confettiCanvas.height + this.size) {
-          this.x = Math.random() * confettiCanvas.width;
-          this.y = -this.size;
-          this.rotation = Math.random() * 360;
+    <canvas id="confetti"></canvas>
+    <div class="balloons" id="balloons"></div>
+    <div class="container">
+        <h1>Happy Birthday!</h1>
+        <p>In a world filled with screens, I thought a book would be a refreshing gift.</p>
+        <p>May it inspire and uplift your spirit!</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        // Confetti effect
+        function launchConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#2b0a3d', '#1a1a4e', '#3c1053', '#ffffff']
+            });
         }
-      }
-      draw(ctx) {
-        ctx.save();
-        ctx.translate(this.x + this.tilt, this.y);
-        ctx.rotate(this.rotation * Math.PI / 180);
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size / 3);
-        ctx.restore();
-      }
-    }
+        setInterval(launchConfetti, 2000);
 
-    const confettis = [];
-    for (let i = 0; i < 150; i++) {
-      confettis.push(new Confetti());
-    }
-
-    function animateConfetti() {
-      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-      confettis.forEach(c => {
-        c.update();
-        c.draw(ctx);
-      });
-      requestAnimationFrame(animateConfetti);
-    }
-
-    window.addEventListener('resize', () => {
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
-      starCanvas.width = window.innerWidth;
-      starCanvas.height = window.innerHeight;
-    });
-
-    animateConfetti();
-  </script>
+        // Balloons
+        const balloonsContainer = document.getElementById('balloons');
+        const colors = ['#2b0a3d', '#1a1a4e', '#3c1053', '#ffffff'];
+        for (let i = 0; i < 10; i++) {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            balloon.style.left = `${Math.random() * 100}vw`;
+            balloon.style.animationDuration = `${8 + Math.random() * 4}s`;
+            balloon.style.animationDelay = `${Math.random() * 5}s`;
+            balloonsContainer.appendChild(balloon);
+        }
+    </script>
 </body>
 </html>
