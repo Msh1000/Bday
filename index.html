@@ -1,129 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 5vh;
-            background: linear-gradient(135deg, #2b0a3d, #1a1a4e, #3c1053);
-            font-family: 'Dancing Script', cursive;
-            overflow: hidden;
-        }
-        .container {
-            text-align: center;
-            color: #ffffff;
-            position: relative;
-            z-index: 2;
-            animation: fadeIn 2s ease-in;
-            max-width: 80%;
-            padding: 20px;
-        }
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 4.5rem;
-            margin: 0;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
-            animation: bounceIn 1.5s ease;
-        }
-        p {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-            animation: slideIn 2s ease;
-        }
-        .balloons {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .balloon {
-            position: absolute;
-            width: 50px;
-            height: 70px;
-            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
-            border-radius: 50%;
-            animation: float 10s infinite ease-in-out;
-        }
-        .balloon::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            width: 2px;
-            height: 20px;
-            background: #ffffff;
-            transform: translateX(-50%);
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh); }
-            100% { transform: translateY(-100vh); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0.1); opacity: 0; }
-            60% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-        @keyframes slideIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding-top: 10vh;
+      height: 100vh;
+      background: linear-gradient(135deg, #2b0a3d, #1a1a4e, #3c1053);
+      font-family: 'Dancing Script', cursive;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .container {
+      text-align: center;
+      color: #ffffff;
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 2s ease-in;
+      max-width: 90%;
+      padding: 10px 20px;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.5rem;
+      margin: 0;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+      animation: bounceIn 1.5s ease;
+    }
+
+    p {
+      font-size: 1rem;
+      margin: 10px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      animation: slideIn 2s ease;
+    }
+
+    .balloons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .balloon {
+      position: absolute;
+      width: 35px;
+      height: 50px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+      border-radius: 50%;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: #ffffff;
+      transform: translateX(-50%);
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh); }
+      100% { transform: translateY(-100vh); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.1); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    @media (min-width: 768px) {
+      h1 { font-size: 4rem; }
+      p { font-size: 1.2rem; }
+      .balloon {
+        width: 50px;
+        height: 70px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <canvas id="confetti"></canvas>
-    <div class="balloons" id="balloons"></div>
-    <div class="container">
-        <h1>Happy Birthday!</h1>
-        <p>In a world filled with screens, I thought a book would be a refreshing gift.</p>
-        <p>May it inspire and uplift your spirit!</p>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-        // Confetti effect
-        function launchConfetti() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#2b0a3d', '#1a1a4e', '#3c1053', '#ffffff']
-            });
-        }
-        setInterval(launchConfetti, 2000);
+  <canvas id="confetti"></canvas>
+  <div class="balloons" id="balloons"></div>
+  <div class="container">
+    <h1>Happy Birthday!</h1>
+    <p>In a world filled with screens, I thought a book would be a refreshing gift.</p>
+    <p>May it inspire and uplift your spirit!</p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    // Confetti
+    function launchConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#2b0a3d', '#1a1a4e', '#3c1053', '#ffffff']
+      });
+    }
+    setInterval(launchConfetti, 2000);
 
-        // Balloons
-        const balloonsContainer = document.getElementById('balloons');
-        const colors = ['#2b0a3d', '#1a1a4e', '#3c1053', '#ffffff'];
-        for (let i = 0; i < 10; i++) {
-            const balloon = document.createElement('div');
-            balloon.className = 'balloon';
-            balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            balloon.style.left = `${Math.random() * 100}vw`;
-            balloon.style.animationDuration = `${8 + Math.random() * 4}s`;
-            balloon.style.animationDelay = `${Math.random() * 5}s`;
-            balloonsContainer.appendChild(balloon);
-        }
-    </script>
+    // Balloons
+    const balloonsContainer = document.getElementById('balloons');
+    const colors = ['#2b0a3d', '#1a1a4e', '#3c1053', '#ffffff'];
+    for (let i = 0; i < 10; i++) {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      balloon.style.left = `${Math.random() * 100}vw`;
+      balloon.style.animationDuration = `${8 + Math.random() * 4}s`;
+      balloon.style.animationDelay = `${Math.random() * 5}s`;
+      balloonsContainer.appendChild(balloon);
+    }
+  </script>
 </body>
 </html>
