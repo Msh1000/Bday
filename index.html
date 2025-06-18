@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Happy Birthday! 🎂</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <audio id="party-sound" src="party.mp3" preload="auto"></audio>
+</head>
+<body>
+    <div class="balloons">
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+
+    <div class="container">
+        <div class="birthday-card">
+            <h1 class="main-title">🎉 Happy Birthday! 🎉</h1>
+            <p class="subtitle">I know its late :-) I hope you had a great Birthday. Wishing you all the happiness and joy that your heart can hold!</p>
+            
+            <div class="cake-container">
+                <div class="candles">🕯️🕯️🕯️</div>
+                <div class="cake" onclick="blowCandles()">🎂</div>
+            </div>
+            
+            <p class="wish-text">
+                Thought Id get you something that would uplift you spiritually. It’s a light read,
+                Nice for those moments when you just wanna chill and reflect a little. Was gonna get
+                you a car but was like nahh what would you even do with it.
+            </p>
+            
+            <button class="celebration-btn" onclick="startCelebration()">🎊 Celebrate!</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
