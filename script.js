@@ -4,18 +4,21 @@ let ambientTimer = null;
 const music = document.getElementById('party-sound');
 const confettiContainer = document.getElementById('confetti');
 
-function toggleCelebration() {
+function toggleCelebration(e) {
+    // Prevent default touch/click behavior issues on mobile
+    if (e) e.preventDefault();
+
     const btn = document.querySelector('.celebration-btn');
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
 
     if (celebrationActive) {
-        // STOP
+        // STOP celebration
         celebrationActive = false;
         btn.classList.remove('active');
         btn.textContent = '🎊 Celebrate!';
 
         document.body.classList.remove('celebrating');
-       // document.querySelector('.secret-message').classList.remove('show');
+        document.querySelector('.secret-message').classList.remove('show');
         document.querySelector('.birthday-card').classList.remove('music-pulse');
         document.querySelector('.cake').classList.remove('cake-celebrate');
         confettiContainer.classList.remove('active');
@@ -25,7 +28,7 @@ function toggleCelebration() {
         const fadeOut = setInterval(() => {
             if (vol > 0.03) {
                 vol -= 0.04;
-                music.volume = Math.max(vol, 0);
+                music.volume = Math.max(0, vol);
             } else {
                 music.pause();
                 music.currentTime = 0;
@@ -33,14 +36,13 @@ function toggleCelebration() {
             }
         }, 120);
 
-        clearInterval(sparkleTimer);
-        clearInterval(ambientTimer);
+        if (sparkleTimer) clearInterval(sparkleTimer);
+        if (ambientTimer) clearInterval(ambientTimer);
         sparkleTimer = null;
         ambientTimer = null;
 
     } else {
-        // START
-                // START celebration
+        // START celebration
         celebrationActive = true;
         btn.classList.add('active');
         btn.textContent = '🎊 Stop Celebration';
@@ -50,86 +52,69 @@ function toggleCelebration() {
         document.querySelector('.birthday-card').classList.add('music-pulse');
         document.querySelector('.cake').classList.add('cake-celebrate');
 
-        // Music fade-in (unchanged)
+        // Music fade-in
         music.volume = 0;
         music.currentTime = 0;
-        music.play().catch(() => {});
+        music.play().catch(() => console.log("Audio blocked - user interaction required"));
 
         let vol = 0;
         const fadeIn = setInterval(() => {
             if (vol < 0.65) {
-                vol += 0.035;
+                vol += 0.04;
                 music.volume = vol;
             } else {
                 clearInterval(fadeIn);
             }
-        }, 180);
+        }, 150);
 
         confettiContainer.classList.add('active');
 
-                // ───────────────────────────────────────────────
-        //   PARTICLES THAT KEEP GOING THE WHOLE TIME
-        // ───────────────────────────────────────────────
-        const isMobile = window.innerWidth < 768;
+        // PARTICLES - continuous until celebration ends
+        const maxConfettiOnScreen = isMobile ? 35 : 70;
+        const maxSparklesOnScreen  = isMobile ? 8 : 18;
 
-        const maxConfettiOnScreen = isMobile ? 30 : 60;       // increased cap → more visible
-        const maxSparklesOnScreen  = isMobile ? 8 : 15;
-
-        const initialConfettiCount = isMobile ? 30 : 60;
-        const initialHeartCount    = isMobile ? 18 : 35;
+        const initialConfettiCount = isMobile ? 35 : 70;
+        const initialHeartCount    = isMobile ? 20 : 40;
 
         // Initial burst
         for (let i = 0; i < initialConfettiCount; i++) {
-            setTimeout(() => createConfetti('normal'), i * (isMobile ? 100 : 70));
+            setTimeout(() => createConfetti('normal'), i * (isMobile ? 90 : 60));
         }
         for (let i = 0; i < initialHeartCount; i++) {
-            setTimeout(() => createConfetti('heart'), i * (isMobile ? 160 : 110));
+            setTimeout(() => createConfetti('heart'), i * (isMobile ? 150 : 100));
         }
 
-        // Continuous creation – keeps particles coming until celebration ends
+        // Continuous particles - this keeps them coming the whole time
         ambientTimer = setInterval(() => {
             if (!celebrationActive) return;
 
-            const currentCount = getCurrentParticleCount();
-            if (currentCount < maxConfettiOnScreen) {
-                // More likely to create hearts/confetti mix
-                createConfetti(Math.random() > 0.4 ? 'heart' : 'normal');
+            const current = confettiContainer.children.length;
+            if (current < maxConfettiOnScreen) {
+                // Slightly favor hearts during celebration
+                createConfetti(Math.random() > 0.35 ? 'heart' : 'normal');
             }
-        }, isMobile ? 1200 : 700);   // frequent enough to feel continuous
+        }, isMobile ? 1000 : 600);  // frequent enough to feel continuous
 
-        // Sparkles – keep them subtle but present
+        // Sparkles - continuous but light
         sparkleTimer = setInterval(() => {
             if (!celebrationActive) return;
             if (document.querySelectorAll('.sparkle').length < maxSparklesOnScreen) {
                 createSparkle();
             }
-        }, isMobile ? 2000 : 1200);
+        }, isMobile ? 1800 : 1100);
 
-        // Sparkles – a bit faster too
-        sparkleTimer = setInterval(() => {
-            if (!celebrationActive) return;
-            if (document.querySelectorAll('.sparkle').length < maxSparklesOnScreen) {
-                createSparkle();
-            }
-        }, isMobile ? 2200 : 1400);
-
-        // Auto-stop after 60 seconds (only if still active)
+        // Auto-end after 60 seconds
         setTimeout(() => {
-            if (celebrationActive) toggleCelebration();
+            if (celebrationActive) toggleCelebration(null);
         }, 60000);
     }
-}
-
-// Helper: count current confetti + hearts
-function getCurrentParticleCount() {
-    return confettiContainer.children.length;
 }
 
 function createConfetti(type = 'normal') {
     if (!celebrationActive || !confettiContainer) return;
 
-    const isMobile = window.innerWidth < 768;
-    const maxOnScreen = isMobile ? 30 : 60;
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+    const maxOnScreen = isMobile ? 35 : 70;
 
     if (confettiContainer.children.length >= maxOnScreen) return;
 
@@ -137,10 +122,7 @@ function createConfetti(type = 'normal') {
     piece.className = type === 'heart' ? 'confetti-heart' : 'confetti-piece';
 
     piece.style.left = Math.random() * 100 + 'vw';
-
-    // Fall duration: fast enough to feel lively, but long enough to fill the screen
-    const fallDuration = (Math.random() * 2 + 2.5) + 's';  // 2.5–4.5 seconds
-    piece.style.animationDuration = fallDuration;
+    piece.style.animationDuration = (Math.random() * 2.5 + 2.5) + 's'; // 2.5–5s fall
 
     if (type === 'normal') {
         piece.style.backgroundColor = getRandomColor();
@@ -149,23 +131,23 @@ function createConfetti(type = 'normal') {
 
     confettiContainer.appendChild(piece);
 
-    // Longer lifetime so they don't disappear too soon
     setTimeout(() => {
         if (piece.parentNode) piece.remove();
-    }, 7000);  // 7 seconds – covers most of the fall + buffer
+    }, 8000); // long lifetime = smoother coverage
 }
 
 function createSparkle() {
     if (!celebrationActive) return;
 
-    const sparkleCount = document.querySelectorAll('.sparkle').length;
-    const maxSparkles = window.innerWidth < 768 ? 5 : 10;
-    if (sparkleCount >= maxSparkles) return;
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+    const maxSparkles = isMobile ? 8 : 18;
+
+    if (document.querySelectorAll('.sparkle').length >= maxSparkles) return;
 
     const s = document.createElement('div');
     s.className = 'sparkle';
     s.style.left = Math.random() * 100 + 'vw';
-    s.style.top = Math.random() * 50 + 10 + 'vh'; // mostly upper area
+    s.style.top = Math.random() * 50 + 5 + 'vh';
     document.body.appendChild(s);
 
     setTimeout(() => {
@@ -174,7 +156,7 @@ function createSparkle() {
 }
 
 function getRandomColor() {
-    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#ff9f1c','#ff006e'];
+    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#ff9f1c','#ff006e','#8338ec'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
@@ -192,13 +174,16 @@ function blowCandles() {
         cake.innerHTML = '🎂';
     }, 2500);
 
-    toggleCelebration();
+    toggleCelebration(null);
 }
 
-// Events
-document.querySelector('.celebration-btn').addEventListener('click', toggleCelebration);
+// Attach events for both desktop and mobile
+const celebrateBtn = document.querySelector('.celebration-btn');
 
-// Shake (kept but throttled)
+celebrateBtn.addEventListener('click', toggleCelebration);
+celebrateBtn.addEventListener('touchstart', toggleCelebration, { passive: false });
+
+// Optional shake detection (unchanged)
 let lastShake = 0;
 window.addEventListener('devicemotion', (e) => {
     const acc = e.accelerationIncludingGravity;
