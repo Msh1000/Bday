@@ -19,6 +19,7 @@
     </div>
 
     <div class="confetti" id="confetti"></div>
+    <div class="hearts" id="hearts"></div>
 
     <div class="container">
         <div class="birthday-card">
@@ -30,13 +31,17 @@
                 <div class="cake" onclick="blowCandles()">🎂</div>
             </div>
             
-            <p class="wish-text">
+            <!-- Wish text starts hidden and fades in -->
+            <p class="wish-text hidden" id="wishMessage">
                 Hapyy birthday..................
             </p>
             
-            <button class="celebration-btn" onclick="startCelebration()">🎊 Celebrate!</button>
+            <button class="celebration-btn" onclick="toggleCelebration()">
+                🎊 Celebrate!
+            </button>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
