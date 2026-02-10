@@ -589,3 +589,33 @@ body, .confetti, .hearts, .balloons {
     opacity: 0;
   }
 }
+
+.firework {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: hsl(var(--hue), 90%, 65%);
+    border-radius: 50%;
+    box-shadow: 
+        0 0 20px 8px hsl(var(--hue), 90%, 70%),
+        0 0 40px 15px hsl(var(--hue), 80%, 50%);
+    opacity: 0;
+    animation: firework-explode 2s forwards;
+    pointer-events: none;
+}
+
+@keyframes firework-explode {
+    0% {
+        transform: scale(0.1);
+        opacity: 1;
+    }
+    30% {
+        transform: scale(1.4);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.8);
+        opacity: 0;
+    }
+}
+
