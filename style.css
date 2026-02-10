@@ -562,3 +562,30 @@ body, .confetti, .hearts, .balloons {
     }
 
 }
+
+
+.party-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(255,215,0,0.3); }
+  50% { transform: scale(1.03); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(255,215,0,0.3); }
+}
+
+.spark {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: gold;
+  border-radius: 50%;
+  animation: explode 1.5s ease-out forwards;
+}
+
+@keyframes explode {
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(0);
+    opacity: 0;
+  }
+}
