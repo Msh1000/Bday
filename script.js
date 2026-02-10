@@ -1,12 +1,6 @@
 let celebrationActive = false;
 let celebrationTimer = null;
-let lastShakeTime = 0;
-let celebrationStartTime = 0;
 const audio = document.getElementById('party-sound');
-
-const MIN_DURATION = 30000;      // 30 seconds minimum
-const SHAKE_TIMEOUT = 5000;      // 5 seconds after last shake
-const MAX_DURATION = 60000;      // hard max 60 seconds
 
 function toggleCelebration() {
     if (celebrationActive) {
@@ -19,18 +13,15 @@ function toggleCelebration() {
 function startCelebration() {
     if (celebrationActive) return;
     celebrationActive = true;
-    celebrationStartTime = Date.now();
-    lastShakeTime = Date.now();
 
+    // Initial burst – fewer on mobile
     const isMobile = window.innerWidth <= 768;
-    const confettiCount = isMobile ? 30 : 50;
+    const initialBurstCount = isMobile ? 30 : 50;
 
-    // Initial burst
-    for (let i = 0; i < confettiCount; i++) {
+    for (let i = 0; i < initialBurstCount; i++) {
         setTimeout(() => {
-            createConfettiPiece();
-            if (Math.random() > 0.5) createHeartPiece();
-        }, i * 140);   // slightly slower stagger for mobile
+            createFlowerParticle();
+        }, i * 120);
     }
 
     // Update button
@@ -47,19 +38,19 @@ function startCelebration() {
     lines.forEach((line, index) => {
         setTimeout(() => {
             line.classList.add('visible');
-        }, 1000 + index * 2200); // gentler timing
+        }, index * 2000);
     });
 
     // Music fade in
     audio.volume = 0;
     audio.currentTime = 0;
     audio.play().catch(e => console.log("Audio play failed:", e));
-    fadeVolume(audio, 0, 1, 1800);
+    fadeVolume(audio, 0, 1, 1500);
 
     // Visuals
     document.body.classList.add('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.add('active');
-    document.getElementById('hearts').classList.add('active');
+    document.getElementById('hearts').classList.add('active'); // still using hearts container, but now it's flowers
 
     // Speed up balloons
     document.querySelectorAll('.balloon').forEach(b => b.classList.add('sped-up'));
@@ -67,20 +58,21 @@ function startCelebration() {
     // Start continuous particles
     startParticles();
 
-    // Check for auto-end (will be managed by shake or timeout)
-    checkAutoEnd();
+    // Auto-stop after 30 seconds
+    celebrationTimer = setTimeout(endCelebration, 30000);
 }
 
-function endCelebration(wasMaxDuration = false) {
+function endCelebration() {
     if (!celebrationActive) return;
     celebrationActive = false;
+
     clearTimeout(celebrationTimer);
 
     // Button back
     document.querySelector('.celebration-btn').textContent = "🎊 Celebrate!";
 
     // Music fade out
-    fadeVolume(audio, 1, 0, 1800, () => {
+    fadeVolume(audio, 1, 0, 1500, () => {
         audio.pause();
     });
 
@@ -90,63 +82,8 @@ function endCelebration(wasMaxDuration = false) {
     document.getElementById('hearts').classList.remove('active');
     document.querySelectorAll('.balloon').forEach(b => b.classList.remove('sped-up'));
 
-    // Fireworks only on natural/auto end (not manual stop)
-    if (!wasMaxDuration) {
-        launchFireworks();
-    }
-}
-
-function checkAutoEnd() {
-    if (!celebrationActive) return;
-
-    const now = Date.now();
-    const elapsed = now - celebrationStartTime;
-
-    // Hard max
-    if (elapsed >= MAX_DURATION) {
-        endCelebration(true);
-        return;
-    }
-
-    // Minimum duration not reached yet → wait full min
-    if (elapsed < MIN_DURATION) {
-        celebrationTimer = setTimeout(checkAutoEnd, 1000);
-        return;
-    }
-
-    // After min duration: end if no shake for SHAKE_TIMEOUT
-    if (now - lastShakeTime > SHAKE_TIMEOUT) {
-        endCelebration();
-    } else {
-        celebrationTimer = setTimeout(checkAutoEnd, 800);
-    }
-}
-
-function launchFireworks() {
-    const container = document.getElementById('confetti') || document.body;
-    const isMobile = window.innerWidth <= 768;
-    const count = isMobile ? 12 : 20;
-
-    for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-            createFirework(container);
-        }, i * 220 + Math.random() * 300);
-    }
-}
-
-function createFirework(container) {
-    const fw = document.createElement('div');
-    fw.className = 'firework';
-    fw.style.left = Math.random() * 100 + '%';
-    fw.style.top = Math.random() * 60 + '%'; // mostly upper half
-
-    const hue = Math.random() * 360;
-    fw.style.setProperty('--hue', hue);
-
-    container.appendChild(fw);
-
-    // Remove after animation
-    setTimeout(() => fw.remove(), 2200);
+    // Trigger fireworks when celebration ends
+    launchFireworks();
 }
 
 function fadeVolume(element, start, end, durationMs, callback = () => {}) {
@@ -166,51 +103,96 @@ function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     }, stepTime);
 }
 
-function createConfettiPiece() {
-    if (!celebrationActive) return;
+function createFlowerParticle() {
+    const isMobile = window.innerWidth <= 768;
     const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = Math.random() * 100 + '%';
-    el.style.backgroundColor = getRandomColor();
-    document.getElementById('confetti').appendChild(el);
-    setTimeout(() => el.remove(), 4500);
-}
-
-function createHeartPiece() {
-    if (!celebrationActive) return;
-    const el = document.createElement('div');
-    el.className = 'heart-piece';
-    el.textContent = '❤️';
+    
+    // 50% heart, 50% rose
+    const isHeart = Math.random() > 0.5;
+    el.className = isHeart ? 'heart-piece' : 'rose-piece';
+    el.textContent = isHeart ? '❤️' : '🌹';
+    
     el.style.left = Math.random() * 100 + '%';
     el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    
+    // Slightly faster on desktop
+    const fallDuration = isMobile ? '4s' : '3.5s';
+    el.style.animationDuration = fallDuration + ',' + (Math.random() * 2 + 2) + 's';
+
     document.getElementById('hearts').appendChild(el);
-    setTimeout(() => el.remove(), 5500);
+    setTimeout(() => el.remove(), 6000);
 }
 
 function startParticles() {
-    if (!celebrationActive) return;
-
     const isMobile = window.innerWidth <= 768;
-    const intervalMs = isMobile ? 320 : 220;
+    const intervalMs = isMobile ? 320 : 220; // slower on mobile
 
     const interval = setInterval(() => {
         if (!celebrationActive) {
             clearInterval(interval);
             return;
         }
-        createConfettiPiece();
-        if (Math.random() > (isMobile ? 0.7 : 0.45)) {
-            createHeartPiece();
+
+        createFlowerParticle();
+
+        // Occasionally create extra one
+        if (Math.random() > (isMobile ? 0.7 : 0.55)) {
+            setTimeout(createFlowerParticle, 80);
         }
     }, intervalMs);
 }
 
+function launchFireworks() {
+    const container = document.getElementById('confetti'); // reuse confetti container for fireworks
+    const isMobile = window.innerWidth <= 768;
+    const burstCount = isMobile ? 5 : 8;
+
+    for (let i = 0; i < burstCount; i++) {
+        setTimeout(() => {
+            createFireworkBurst(container);
+        }, i * 400 + Math.random() * 300);
+    }
+}
+
+function createFireworkBurst(container) {
+    const centerX = Math.random() * 80 + 10; // % from left
+    const centerY = Math.random() * 40 + 10; // upper half of screen
+
+    const burst = document.createElement('div');
+    burst.className = 'firework-burst';
+    burst.style.left = centerX + '%';
+    burst.style.top = centerY + '%';
+
+    container.appendChild(burst);
+
+    // Create rays/sparks
+    const color = getRandomColor();
+    const sparkCount = Math.floor(Math.random() * 8) + 12;
+
+    for (let i = 0; i < sparkCount; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'firework-spark';
+        spark.style.background = color;
+        spark.style.transform = `rotate(${i * (360 / sparkCount)}deg) translateY(-30px)`;
+        burst.appendChild(spark);
+    }
+
+    // Auto-remove after animation
+    setTimeout(() => {
+        burst.remove();
+    }, 1800);
+}
+
 function getRandomColor() {
-    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
+    const colors = [
+        '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7',
+        '#fd79a8', '#a29bfe', '#6c5ce7', '#55a3ff', '#26de81',
+        '#ff9f1c', '#e76f51', '#2a9d8f', '#e9c46a'
+    ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-// ── Blow candles also starts/updates celebration ──
+// ── Blow candles also starts celebration ──
 function blowCandles() {
     const candles = document.querySelector('.candles');
     const cake = document.querySelector('.cake');
@@ -225,15 +207,10 @@ function blowCandles() {
         cake.innerHTML = '🎂';
     }, 3000);
 
-    // Trigger or extend celebration
-    if (!celebrationActive) {
-        startCelebration();
-    } else {
-        lastShakeTime = Date.now(); // extend
-    }
+    startCelebration();
 }
 
-// ── Shake detection – extend celebration + extra particles ──
+// ── Shake detection – extra particles ──
 let lastShake = 0;
 window.addEventListener('devicemotion', e => {
     if (!e.accelerationIncludingGravity) return;
@@ -241,20 +218,15 @@ window.addEventListener('devicemotion', e => {
     const speed = Math.sqrt(x*x + y*y + z*z);
     
     const now = Date.now();
-    if (speed > 14 && now - lastShake > 900) {   // debounce a bit more
+    if (speed > 14 && now - lastShake > 1000) {
         lastShake = now;
-        lastShakeTime = now; // update global last shake time
-
-        blowCandles(); // visual feedback + start if not active
+        blowCandles();
         
-        // Extra burst only if celebration is active
-        if (celebrationActive) {
-            for (let i = 0; i < 35; i++) {
-                setTimeout(() => {
-                    createConfettiPiece();
-                    if (Math.random() > 0.4) createHeartPiece();
-                }, i * 70);
-            }
+        // Extra burst
+        for (let i = 0; i < 45; i++) {
+            setTimeout(() => {
+                createFlowerParticle();
+            }, i * 60);
         }
     }
 });
