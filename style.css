@@ -93,15 +93,6 @@ body {
   transform: scale(1.1) rotate(5deg);
 }
 
-.cake-celebrate {
-  animation: cakeGentle 4s ease-in-out infinite;
-}
-
-@keyframes cakeGentle {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50%      { transform: scale(1.06) rotate(4deg); }
-}
-
 @keyframes cakeGlow {
   from { filter: drop-shadow(0 0 10px rgba(255, 175, 175, 0.5)); }
   to { filter: drop-shadow(0 0 20px rgba(255, 120, 120, 0.8)); }
@@ -143,15 +134,7 @@ body {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
-  animation: pulseGlow 2s infinite;
 }
-
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.4); }
-  50% { box-shadow: 0 0 25px rgba(255, 105, 180, 0.9); }
-  100% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.4); }
-}
-
 
 .celebration-btn:hover {
   transform: translateY(-3px);
@@ -173,17 +156,12 @@ body {
   z-index: 1;
 }
 
-/* Faster balloons during celebration */
-body.celebrating .balloon {
-  animation-duration: 10s;   /* speed up a lot */
-}
-
 .balloon {
   position: absolute;
   width: 30px;
   height: 40px;
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  animation: balloonFloat 35s linear infinite;   /* much slower initially */
+  animation: balloonFloat 6s ease-in-out infinite;
   opacity: 0.7;
   /* Add relative positioning for pseudo-element */
   position: relative;
@@ -393,161 +371,4 @@ body.dark-theme {
 
 .dark-theme .celebration-btn:hover {
   background: linear-gradient(45deg, #ff0080, #8000ff);
-}
-
-.confetti-heart {
-  position: absolute;
-  font-size: 22px;
-  animation: heartFall linear forwards;
-  pointer-events: none;
-}
-
-.confetti-heart::before {
-  content: '❤️';
-}
-
-@keyframes heartFall {
-  0% {
-    transform: translateY(-10vh) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(110vh) scale(0.7);
-    opacity: 0;
-  }
-}
-
-.cake-celebrate {
-  animation: cakeSpin 1s ease-in-out infinite;
-}
-
-@keyframes cakeSpin {
-  0% { transform: scale(1) rotate(0); }
-  50% { transform: scale(1.2) rotate(10deg); }
-  100% { transform: scale(1) rotate(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center,
-    rgba(255, 105, 180, 0.15),
-    rgba(0, 0, 0, 0.8));
-  opacity: 0;
-  transition: opacity 2s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-body.dark-theme::after {
-  opacity: 1;
-}
-
-.secret-message {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1.2s ease, transform 1.2s ease;
-  margin-top: 30px;
-  font-size: clamp(1.1rem, 3vw, 1.4rem);
-  color: #ff4f9a;
-  transition: all 2s ease;
-  text-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
-}
-
-.secret-message.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-.secret-message .msg-line {
-  display: block;
-  opacity: 0;
-  transform: translateY(25px);
-  transition: opacity 1.8s ease, transform 1.8s ease;   /* ← slower */
-  color: #ff5fa2;
-  text-shadow: 0 0 12px rgba(255, 95, 162, 0.6);
-  font-size: clamp(1.2rem, 4vw, 1.6rem);
-}
-
-.secret-message.show .msg-line:nth-child(1) { transition-delay: 1.0s;  }
-.secret-message.show .msg-line:nth-child(2) { transition-delay: 3.0s;  }
-.secret-message.show .msg-line:nth-child(3) { transition-delay: 6.2s;  }
-
-.secret-message.show .msg-line {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.birthday-card.music-pulse {
-  animation: musicPulse 4s ease-in-out infinite;
-}
-
-@keyframes musicPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.015); }
-  100% { transform: scale(1); }
-}
-
-.sparkle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.8;
-  box-shadow: 0 0 10px rgba(255,255,255,0.8);
-  animation: sparkleFloat 6s linear forwards;
-}
-
-@keyframes sparkleFloat {
-  0% {
-    transform: translateY(100vh) scale(0.5);
-    opacity: 0;
-  }
-  20% { opacity: 1; }
-  100% {
-    transform: translateY(-10vh) scale(1);
-    opacity: 0;
-  }
-}
-
-
-
-body.celebrating .birthday-card {
-  animation: partyPulse 2.5s ease-in-out infinite;
-}
-
-@keyframes partyPulse {
-  0%, 100% {
-    box-shadow: 0 0 25px rgba(255, 105, 180, 0.5),
-                0 0 50px rgba(255, 20, 147, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 45px rgba(255, 105, 180, 0.9),
-                0 0 80px rgba(255, 20, 147, 0.6);
-  }
-}
-
-/* Make button say "Stop" when active (optional visual feedback) */
-.celebration-btn.active::after {
-  content: " (Stop)";
-  font-size: 0.85em;
-  opacity: 0.7;
-}
-
-.confetti-piece,
-.confetti-heart,
-.sparkle {
-  will-change: transform, opacity;
-  transform: translateZ(0);          /* force hardware acceleration */
-  backface-visibility: hidden;
 }
