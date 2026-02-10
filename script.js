@@ -14,15 +14,13 @@ function startCelebration() {
     if (celebrationActive) return;
     celebrationActive = true;
 
-    // Initial burst – fewer on mobile
-    const isMobile = window.innerWidth <= 768;
-    const initialBurstCount = isMobile ? 30 : 50;
-
-    for (let i = 0; i < initialBurstCount; i++) {
-        setTimeout(() => {
-            createFlowerParticle();
-        }, i * 120);
-    }
+    // In startCelebration()
+for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
+    setTimeout(() => {
+        createConfettiPiece();
+        if (Math.random() > 0.5) createHeartPiece();
+    }, i * 120);   // slower stagger
+}
 
     // Update button
     const btn = document.querySelector('.celebration-btn');
@@ -32,14 +30,15 @@ function startCelebration() {
     const wish = document.getElementById('wishMessage');
     const lines = wish.querySelectorAll('span');
 
-    wish.style.display = 'block';
+    wish.style.display = 'block';   // bring it into layout
     wish.classList.remove('hidden');
 
     lines.forEach((line, index) => {
         setTimeout(() => {
             line.classList.add('visible');
-        }, index * 2000);
+        }, index * 2000); // 3 seconds per line
     });
+
 
     // Music fade in
     audio.volume = 0;
@@ -50,12 +49,12 @@ function startCelebration() {
     // Visuals
     document.body.classList.add('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.add('active');
-    document.getElementById('hearts').classList.add('active'); // still using hearts container, but now it's flowers
+    document.getElementById('hearts').classList.add('active');
 
     // Speed up balloons
     document.querySelectorAll('.balloon').forEach(b => b.classList.add('sped-up'));
 
-    // Start continuous particles
+    // Start particles
     startParticles();
 
     // Auto-stop after 30 seconds
@@ -81,9 +80,6 @@ function endCelebration() {
     document.getElementById('confetti').classList.remove('active');
     document.getElementById('hearts').classList.remove('active');
     document.querySelectorAll('.balloon').forEach(b => b.classList.remove('sped-up'));
-
-    // Trigger fireworks when celebration ends
-    launchFireworks();
 }
 
 function fadeVolume(element, start, end, durationMs, callback = () => {}) {
@@ -103,29 +99,29 @@ function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     }, stepTime);
 }
 
-function createFlowerParticle() {
-    const isMobile = window.innerWidth <= 768;
+function createConfettiPiece() {
     const el = document.createElement('div');
-    
-    // 50% heart, 50% rose
-    const isHeart = Math.random() > 0.5;
-    el.className = isHeart ? 'heart-piece' : 'rose-piece';
-    el.textContent = isHeart ? '❤️' : '🌹';
-    
+    el.className = 'confetti-piece' + (celebrationActive ? ' sped-up' : '');
+    el.style.left = Math.random() * 100 + '%';
+    el.style.backgroundColor = getRandomColor();
+    document.getElementById('confetti').appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+}
+
+function createHeartPiece() {
+    const el = document.createElement('div');
+    el.className = 'heart-piece' + (celebrationActive ? ' sped-up' : '');
+    el.textContent = '❤️';
     el.style.left = Math.random() * 100 + '%';
     el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
-    
-    // Slightly faster on desktop
-    const fallDuration = isMobile ? '4s' : '3.5s';
-    el.style.animationDuration = fallDuration + ',' + (Math.random() * 2 + 2) + 's';
-
     document.getElementById('hearts').appendChild(el);
-    setTimeout(() => el.remove(), 6000);
+    setTimeout(() => el.remove(), 5000);
 }
 
 function startParticles() {
+    // Lower frequency on mobile
     const isMobile = window.innerWidth <= 768;
-    const intervalMs = isMobile ? 320 : 220; // slower on mobile
+    const intervalMs = isMobile ? 280 : 180;          // slower on mobile
 
     const interval = setInterval(() => {
         if (!celebrationActive) {
@@ -133,62 +129,17 @@ function startParticles() {
             return;
         }
 
-        createFlowerParticle();
+        createConfettiPiece();
 
-        // Occasionally create extra one
-        if (Math.random() > (isMobile ? 0.7 : 0.55)) {
-            setTimeout(createFlowerParticle, 80);
+        // Hearts less frequent
+        if (Math.random() > (isMobile ? 0.65 : 0.4)) {
+            createHeartPiece();
         }
     }, intervalMs);
 }
 
-function launchFireworks() {
-    const container = document.getElementById('confetti'); // reuse confetti container for fireworks
-    const isMobile = window.innerWidth <= 768;
-    const burstCount = isMobile ? 5 : 8;
-
-    for (let i = 0; i < burstCount; i++) {
-        setTimeout(() => {
-            createFireworkBurst(container);
-        }, i * 400 + Math.random() * 300);
-    }
-}
-
-function createFireworkBurst(container) {
-    const centerX = Math.random() * 80 + 10; // % from left
-    const centerY = Math.random() * 40 + 10; // upper half of screen
-
-    const burst = document.createElement('div');
-    burst.className = 'firework-burst';
-    burst.style.left = centerX + '%';
-    burst.style.top = centerY + '%';
-
-    container.appendChild(burst);
-
-    // Create rays/sparks
-    const color = getRandomColor();
-    const sparkCount = Math.floor(Math.random() * 8) + 12;
-
-    for (let i = 0; i < sparkCount; i++) {
-        const spark = document.createElement('div');
-        spark.className = 'firework-spark';
-        spark.style.background = color;
-        spark.style.transform = `rotate(${i * (360 / sparkCount)}deg) translateY(-30px)`;
-        burst.appendChild(spark);
-    }
-
-    // Auto-remove after animation
-    setTimeout(() => {
-        burst.remove();
-    }, 1800);
-}
-
 function getRandomColor() {
-    const colors = [
-        '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7',
-        '#fd79a8', '#a29bfe', '#6c5ce7', '#55a3ff', '#26de81',
-        '#ff9f1c', '#e76f51', '#2a9d8f', '#e9c46a'
-    ];
+    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
@@ -220,13 +171,16 @@ window.addEventListener('devicemotion', e => {
     const now = Date.now();
     if (speed > 14 && now - lastShake > 1000) {
         lastShake = now;
-        blowCandles();
+        blowCandles(); // also triggers celebration
         
-        // Extra burst
+        // Extra burst of particles
         for (let i = 0; i < 45; i++) {
             setTimeout(() => {
-                createFlowerParticle();
+                createConfettiPiece();
+                createHeartPiece();
             }, i * 60);
         }
     }
+
 });
+
