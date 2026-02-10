@@ -573,49 +573,56 @@ body, .confetti, .hearts, .balloons {
   50% { transform: scale(1.03); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
   100% { transform: scale(1); box-shadow: 0 0 0 rgba(255,215,0,0.3); }
 }
-
-.spark {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: gold;
-  border-radius: 50%;
-  animation: explode 1.5s ease-out forwards;
-}
-
-@keyframes explode {
-  to {
-    transform: translate(var(--dx), var(--dy)) scale(0);
-    opacity: 0;
-  }
-}
-
-.firework {
+/* Flower particles (hearts + roses) */
+.heart-piece, .rose-piece {
     position: absolute;
-    width: 6px;
-    height: 6px;
-    background: hsl(var(--hue), 90%, 65%);
-    border-radius: 50%;
-    box-shadow: 
-        0 0 20px 8px hsl(var(--hue), 90%, 70%),
-        0 0 40px 15px hsl(var(--hue), 80%, 50%);
-    opacity: 0;
-    animation: firework-explode 2s forwards;
+    top: -10%;
+    font-size: 1.8rem;
     pointer-events: none;
+    animation: 
+        fall linear forwards,
+        sway 3s ease-in-out infinite alternate;
+    opacity: 0.9;
 }
 
-@keyframes firework-explode {
-    0% {
-        transform: scale(0.1);
-        opacity: 1;
-    }
-    30% {
-        transform: scale(1.4);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(2.8);
-        opacity: 0;
-    }
+@keyframes fall {
+    to { transform: translateY(120vh) translateX(var(--drift, 0)); }
 }
+
+@keyframes sway {
+    from { transform: translateX(-10px); }
+    to   { transform: translateX(10px); }
+}
+
+/* Fireworks */
+.firework-burst {
+    position: absolute;
+    width: 0;
+    height: 0;
+    transform: scale(0);
+    animation: burst 0.8s forwards;
+}
+
+@keyframes burst {
+    0%   { transform: scale(0); opacity: 1; }
+    70%  { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+.firework-spark {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    transform-origin: center;
+    animation: spark-fly 1.2s forwards;
+}
+
+@keyframes spark-fly {
+    0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(0, -120px) scale(0.3); opacity: 0; }
+}
+
 
