@@ -1,98 +1,51 @@
-let celebrating = false;
-let celebrationTimer = null;
-let particleLoop = null;
-const isMobile = window.innerWidth < 600;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Happy Birthday! 🎂</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <audio id="party-sound" src="party.mp3" preload="auto"></audio>
+</head>
+<body>
+    <div class="balloons">
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+    </div>
 
-const audio = document.getElementById('party-sound');
-const card = document.querySelector('.card');
+    <div class="confetti" id="confetti"></div>
+    <div class="hearts" id="hearts"></div>
 
-function toggleCelebration() {
-  celebrating ? stopCelebration() : startCelebration();
-}
+    <div class="container">
+        <div class="birthday-card">
+            <h1 class="main-title">🎉 Happy Birthday! 🎉</h1>
+            <p class="subtitle">Wishing you all the happiness and joy that your heart can hold!</p>
+            
+            <div class="cake-container">
+                <div class="candles">🕯️🕯️🕯️</div>
+                <div class="cake" onclick="blowCandles()">🎂</div>
+            </div>
+            
+                <p class="wish-text hidden" id="wishMessage">
+            <span>Happy Birthday 🎉</span>
+            <span>May your day be filled with joy ✨</span>
+            <span>Laughter, love, and cake 🎂</span>
+            <span>Today is all about YOU ❤️</span>
+        </p>
 
-function startCelebration() {
-  celebrating = true;
-  card.classList.add('party-pulse');
-  document.querySelector('.celebration-btn').textContent = 'Stop Celebration';
 
-  audio.currentTime = 0;
-  audio.volume = 0;
-  audio.play();
-  fadeVolume(0, 1, 1500);
+            
+            <button class="celebration-btn" onclick="toggleCelebration()">
+                🎊 Celebrate!
+            </button>
+        </div>
+    </div>
 
-  let intensity = 1;
-
-  particleLoop = setInterval(() => {
-    createConfetti(intensity * (isMobile ? 3 : 6));
-    createHearts(intensity * (isMobile ? 2 : 4));
-    if (intensity < 4) intensity += 0.2;
-  }, 800);
-
-  celebrationTimer = setTimeout(() => finale(), 20000);
-}
-
-function stopCelebration() {
-  celebrating = false;
-  clearInterval(particleLoop);
-  clearTimeout(celebrationTimer);
-
-  document.querySelector('.celebration-btn').textContent = 'Celebrate';
-  card.classList.remove('party-pulse');
-
-  fadeVolume(1, 0, 1500);
-}
-
-function finale() {
-  for (let i = 0; i < 5; i++) {
-    setTimeout(() => fireworkBurst(), i * 500);
-  }
-}
-
-function fadeVolume(from, to, duration) {
-  const steps = 20;
-  const stepTime = duration / steps;
-  let step = 0;
-
-  const volInterval = setInterval(() => {
-    step++;
-    audio.volume = from + (to - from) * (step / steps);
-    if (step >= steps) clearInterval(volInterval);
-  }, stepTime);
-}
-
-function createConfetti(count) {
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.animationDuration = 3 + Math.random() * 2 + 's';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5000);
-  }
-}
-
-function createHearts(count) {
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'heart';
-    el.style.left = Math.random() * 100 + 'vw';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 4000);
-  }
-}
-
-function fireworkBurst() {
-  const centerX = Math.random() * window.innerWidth;
-  const centerY = Math.random() * window.innerHeight * 0.5;
-
-  for (let i = 0; i < 20; i++) {
-    const spark = document.createElement('div');
-    spark.className = 'spark';
-    spark.style.left = centerX + 'px';
-    spark.style.top = centerY + 'px';
-    spark.style.setProperty('--dx', (Math.random() - 0.5) * 300 + 'px');
-    spark.style.setProperty('--dy', (Math.random() - 0.5) * 300 + 'px');
-    document.body.appendChild(spark);
-    setTimeout(() => spark.remove(), 1500);
-  }
-}
+    <script src="script.js"></script>
+</body>
+</html>
