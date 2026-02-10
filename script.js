@@ -24,7 +24,7 @@ for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
 
     // Update button
     const btn = document.querySelector('.celebration-btn');
-    btn.textContent = "🛑 Stop Celebration";
+    btn.textContent = "Stop Celebration";
 
     // Show wish message line by line
     const wish = document.getElementById('wishMessage');
@@ -181,4 +181,5 @@ window.addEventListener('devicemotion', e => {
             }, i * 60);
         }
     }
+
 });
