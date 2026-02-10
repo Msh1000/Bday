@@ -1,186 +1,115 @@
-let celebrationActive = false;
+let celebrating = false;
 let celebrationTimer = null;
+let particleLoop = null;
+const isMobile = window.innerWidth < 600;
+
+
 const audio = document.getElementById('party-sound');
+const card = document.querySelector('.card');
+
 
 function toggleCelebration() {
-    if (celebrationActive) {
-        endCelebration();
-    } else {
-        startCelebration();
-    }
+celebrating ? stopCelebration() : startCelebration();
 }
+
 
 function startCelebration() {
-    if (celebrationActive) return;
-    celebrationActive = true;
+celebrating = true;
+card.classList.add('party-pulse');
+document.querySelector('.celebration-btn').textContent = 'Stop Celebration';
 
-    // In startCelebration()
-for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
-    setTimeout(() => {
-        createConfettiPiece();
-        if (Math.random() > 0.5) createHeartPiece();
-    }, i * 120);   // slower stagger
+
+audio.currentTime = 0;
+audio.volume = 0;
+audio.play();
+fadeVolume(0, 1, 1500);
+
+
+let intensity = 1;
+
+
+particleLoop = setInterval(() => {
+createConfetti(intensity * (isMobile ? 3 : 6));
+createHearts(intensity * (isMobile ? 2 : 4));
+if (intensity < 4) intensity += 0.2;
+}, 800);
+
+
+celebrationTimer = setTimeout(() => finale(), 20000);
 }
 
-    // Update button
-    const btn = document.querySelector('.celebration-btn');
-    btn.textContent = "Stop Celebration";
 
-    // Show wish message line by line
-    const wish = document.getElementById('wishMessage');
-    const lines = wish.querySelectorAll('span');
-
-    wish.style.display = 'block';   // bring it into layout
-    wish.classList.remove('hidden');
-
-    lines.forEach((line, index) => {
-        setTimeout(() => {
-            line.classList.add('visible');
-        }, index * 2000); // 3 seconds per line
-    });
+function stopCelebration() {
+celebrating = false;
+clearInterval(particleLoop);
+clearTimeout(celebrationTimer);
 
 
-    // Music fade in
-    audio.volume = 0;
-    audio.currentTime = 0;
-    audio.play().catch(e => console.log("Audio play failed:", e));
-    fadeVolume(audio, 0, 1, 1500);
+document.querySelector('.celebration-btn').textContent = 'Celebrate';
+card.classList.remove('party-pulse');
 
-    // Visuals
-    document.body.classList.add('dark-theme', 'party-pulse');
-    document.getElementById('confetti').classList.add('active');
-    document.getElementById('hearts').classList.add('active');
 
-    // Speed up balloons
-    document.querySelectorAll('.balloon').forEach(b => b.classList.add('sped-up'));
-
-    // Start particles
-    startParticles();
-
-    // Auto-stop after 30 seconds
-    celebrationTimer = setTimeout(endCelebration, 30000);
+fadeVolume(1, 0, 1500);
 }
 
-function endCelebration() {
-    if (!celebrationActive) return;
-    celebrationActive = false;
 
-    clearTimeout(celebrationTimer);
-
-    // Button back
-    document.querySelector('.celebration-btn').textContent = "🎊 Celebrate!";
-
-    // Music fade out
-    fadeVolume(audio, 1, 0, 1500, () => {
-        audio.pause();
-    });
-
-    // Remove effects (message stays visible)
-    document.body.classList.remove('dark-theme', 'party-pulse');
-    document.getElementById('confetti').classList.remove('active');
-    document.getElementById('hearts').classList.remove('active');
-    document.querySelectorAll('.balloon').forEach(b => b.classList.remove('sped-up'));
+function finale() {
+for (let i = 0; i < 5; i++) {
+setTimeout(() => fireworkBurst(), i * 500);
+}
 }
 
-function fadeVolume(element, start, end, durationMs, callback = () => {}) {
-    const steps = 20;
-    const stepTime = durationMs / steps;
-    const stepSize = (end - start) / steps;
-    let vol = start;
 
-    const interval = setInterval(() => {
-        vol += stepSize;
-        element.volume = Math.max(0, Math.min(1, vol));
-        if ((stepSize > 0 && vol >= end) || (stepSize < 0 && vol <= end)) {
-            clearInterval(interval);
-            element.volume = end;
-            callback();
-        }
-    }, stepTime);
+function fadeVolume(from, to, duration) {
+const steps = 20;
+const stepTime = duration / steps;
+let step = 0;
+
+
+const volInterval = setInterval(() => {
+step++;
+audio.volume = from + (to - from) * (step / steps);
+if (step >= steps) clearInterval(volInterval);
+}, stepTime);
 }
 
-function createConfettiPiece() {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece' + (celebrationActive ? ' sped-up' : '');
-    el.style.left = Math.random() * 100 + '%';
-    el.style.backgroundColor = getRandomColor();
-    document.getElementById('confetti').appendChild(el);
-    setTimeout(() => el.remove(), 4000);
+
+function createConfetti(count) {
+for (let i = 0; i < count; i++) {
+const el = document.createElement('div');
+el.className = 'confetti';
+el.style.left = Math.random() * 100 + 'vw';
+el.style.animationDuration = 3 + Math.random() * 2 + 's';
+document.body.appendChild(el);
+setTimeout(() => el.remove(), 5000);
+}
 }
 
-function createHeartPiece() {
-    const el = document.createElement('div');
-    el.className = 'heart-piece' + (celebrationActive ? ' sped-up' : '');
-    el.textContent = '❤️';
-    el.style.left = Math.random() * 100 + '%';
-    el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
-    document.getElementById('hearts').appendChild(el);
-    setTimeout(() => el.remove(), 5000);
+
+function createHearts(count) {
+for (let i = 0; i < count; i++) {
+const el = document.createElement('div');
+el.className = 'heart';
+el.style.left = Math.random() * 100 + 'vw';
+document.body.appendChild(el);
+setTimeout(() => el.remove(), 4000);
+}
 }
 
-function startParticles() {
-    // Lower frequency on mobile
-    const isMobile = window.innerWidth <= 768;
-    const intervalMs = isMobile ? 280 : 180;          // slower on mobile
 
-    const interval = setInterval(() => {
-        if (!celebrationActive) {
-            clearInterval(interval);
-            return;
-        }
+function fireworkBurst() {
+const centerX = Math.random() * window.innerWidth;
+const centerY = Math.random() * window.innerHeight * 0.5;
 
-        createConfettiPiece();
 
-        // Hearts less frequent
-        if (Math.random() > (isMobile ? 0.65 : 0.4)) {
-            createHeartPiece();
-        }
-    }, intervalMs);
+for (let i = 0; i < 20; i++) {
+const spark = document.createElement('div');
+spark.className = 'spark';
+spark.style.left = centerX + 'px';
+spark.style.top = centerY + 'px';
+spark.style.setProperty('--dx', (Math.random() - 0.5) * 300 + 'px');
+spark.style.setProperty('--dy', (Math.random() - 0.5) * 300 + 'px');
+document.body.appendChild(spark);
+setTimeout(() => spark.remove(), 1500);
 }
-
-function getRandomColor() {
-    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
-    return colors[Math.floor(Math.random() * colors.length)];
 }
-
-// ── Blow candles also starts celebration ──
-function blowCandles() {
-    const candles = document.querySelector('.candles');
-    const cake = document.querySelector('.cake');
-    
-    candles.style.animation = 'none';
-    candles.style.opacity = '0.3';
-    cake.innerHTML = '🎂✨';
-    
-    setTimeout(() => {
-        candles.style.animation = 'candleFlicker 1.5s ease-in-out infinite alternate';
-        candles.style.opacity = '1';
-        cake.innerHTML = '🎂';
-    }, 3000);
-
-    startCelebration();
-}
-
-// ── Shake detection – extra particles ──
-let lastShake = 0;
-window.addEventListener('devicemotion', e => {
-    if (!e.accelerationIncludingGravity) return;
-    const { x, y, z } = e.accelerationIncludingGravity;
-    const speed = Math.sqrt(x*x + y*y + z*z);
-    
-    const now = Date.now();
-    if (speed > 14 && now - lastShake > 1000) {
-        lastShake = now;
-        blowCandles(); // also triggers celebration
-        
-        // Extra burst of particles
-        for (let i = 0; i < 45; i++) {
-            setTimeout(() => {
-                createConfettiPiece();
-                createHeartPiece();
-            }, i * 60);
-        }
-    }
-
-});
-
