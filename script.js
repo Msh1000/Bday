@@ -26,9 +26,19 @@ for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "🛑 Stop Celebration";
 
-   // Show wish message
-    const wish = document.querySelector('.wish-text');
+    // Show wish message line by line
+    const wish = document.getElementById('wishMessage');
+    const lines = wish.querySelectorAll('span');
+
+    wish.style.display = 'block';   // bring it into layout
     wish.classList.remove('hidden');
+
+    lines.forEach((line, index) => {
+        setTimeout(() => {
+            line.classList.add('visible');
+        }, index * 2000); // 3 seconds per line
+    });
+
 
     // Music fade in
     audio.volume = 0;
