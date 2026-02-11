@@ -170,7 +170,7 @@ window.addEventListener('devicemotion', e => {
     const speed = Math.sqrt(x*x + y*y + z*z);
     
     const now = Date.now();
-    if (speed > 20 && now - lastShake > 1200) {
+    if (speed > 18 && now - lastShake > 1200) {
         lastShake = now;
 
     const hint = document.getElementById("shakeHint");
@@ -200,3 +200,4 @@ window.addEventListener("load", () => {
         if (hint) hint.style.display = "block";
     }
 });
+
