@@ -3,7 +3,6 @@ let celebrationTimer = null;
 const audio = document.getElementById('party-sound');
 let volumeFadeInterval = null;
 
-const audio = document.getElementById('party-sound');
 
 document.addEventListener('click', () => {
     audio.volume = 0;
@@ -225,5 +224,6 @@ window.addEventListener("load", () => {
         if (hint) hint.style.display = "block";
     }
 });
+
 
 
