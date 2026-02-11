@@ -560,9 +560,9 @@ body, .confetti, .hearts, .balloons {
 
 .shake-hint {
     position: fixed;
-    bottom: 30px;
-    right: 25px;
-    font-size: 34px;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
     opacity: 0.8;                  /* stronger visibility */
     z-index: 1000;
     animation: phoneShake 2.2s ease-in-out infinite;
