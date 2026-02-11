@@ -170,7 +170,7 @@ window.addEventListener('devicemotion', e => {
     const speed = Math.sqrt(x*x + y*y + z*z);
     
     const now = Date.now();
-    if (speed > 14 && now - lastShake > 1000) {
+    if (speed > 20 && now - lastShake > 1200) {
         lastShake = now;
         blowCandles(); // also triggers celebration
         
