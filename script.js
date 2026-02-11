@@ -3,6 +3,16 @@ let celebrationTimer = null;
 const audio = document.getElementById('party-sound');
 let volumeFadeInterval = null;
 
+// Start audio at 0 volume
+audio.volume = 0;
+audio.play().catch(err => console.log(err)); // in case autoplay is blocked
+
+// Stop after 1 second
+setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0; // reset to start
+}, 1000);
+
 
 function toggleCelebration() {
     if (celebrationActive) {
@@ -172,13 +182,25 @@ window.addEventListener('devicemotion', e => {
     const now = Date.now();
     if (speed > 18 && now - lastShake > 1200) {
         lastShake = now;
+const hint = document.getElementById("shakeHint");
 
+if (hint) {
+    hint.style.display = "none";
+}
+
+// Clear existing interval so we don't stack multiple
+if (shakeHintInterval) {
+    clearInterval(shakeHintInterval);
+}
+
+// Start repeating reappearance every 10 seconds
+shakeHintInterval = setInterval(() => {
     const hint = document.getElementById("shakeHint");
-    if (hint) {
-        hint.style.opacity = "0";
-        hint.style.transform = "scale(0.8)";
-        setTimeout(() => hint.style.display = "none", 400);
+    if (hint && window.innerWidth <= 768) {
+        hint.style.display = "block";
     }
+}, 10000);
+    
 
         blowCandles(); // also triggers celebration
         
@@ -200,3 +222,4 @@ window.addEventListener("load", () => {
         if (hint) hint.style.display = "block";
     }
 });
+
