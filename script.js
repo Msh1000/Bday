@@ -170,17 +170,31 @@ window.addEventListener('devicemotion', e => {
     const speed = Math.sqrt(x*x + y*y + z*z);
     
     const now = Date.now();
-    if (speed > 18 && now - lastShake > 1200) {
-        lastShake = now;
+    if (speed > 14 && now - lastShake > 1000) {
+    lastShake = now;
+    lastShakeDetected = now;
 
     const hint = document.getElementById("shakeHint");
     if (hint) {
         hint.style.opacity = "0";
-        hint.style.transform = "scale(0.8)";
+        hint.style.transform += " scale(0.8)";
         setTimeout(() => hint.style.display = "none", 400);
     }
 
-        blowCandles(); // also triggers celebration
+    // Reset cooldown timer
+    if (shakeHintTimer) clearTimeout(shakeHintTimer);
+
+    shakeHintTimer = setTimeout(() => {
+        const hint = document.getElementById("shakeHint");
+        if (hint && window.innerWidth <= 768) {
+            hint.style.display = "block";
+            hint.style.opacity = "0.8";
+            hint.style.transform = ""; // reset scale
+        }
+    }, 10000); // 10 seconds cooldown
+
+    blowCandles();
+
         
         // Extra burst of particles
         for (let i = 0; i < 45; i++) {
@@ -200,4 +214,5 @@ window.addEventListener("load", () => {
         if (hint) hint.style.display = "block";
     }
 });
+
 
