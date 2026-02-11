@@ -163,7 +163,6 @@ body {
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   animation: balloonFloat 12s ease-in-out infinite;
   opacity: 0.7;
-  /* Add relative positioning for pseudo-element */
   position: relative;
 }
 
@@ -422,10 +421,9 @@ html, body {
 
 
 
-/* Light, mobile-friendly party pulse */
 body.party-pulse {
     animation: partyPulse 1.2s ease-in-out infinite alternate;
-    will-change: background-color, box-shadow;   /* helps performance */
+    will-change: background-color, box-shadow;   
 }
 
 @keyframes partyPulse {
@@ -506,7 +504,6 @@ body.party-pulse {
     transition: opacity 1.5s ease, transform 1.5s ease;
 }
 
-/* Optional: remove space after last line */
 .wish-text span:last-child {
     margin-bottom: 0;
 }
@@ -523,7 +520,6 @@ body.party-pulse {
     transform: translateY(0);
 }
 
-/* Optional: make text bigger/nicer when dark theme is active */
 .dark-theme .wish-text {
     color: #f0e8ff;
     text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
@@ -555,10 +551,38 @@ body, .confetti, .hearts, .balloons {
         animation-duration: 7s !important;     /* slower balloons = less CPU */
     }
 
-    /* Optional: fewer particles during celebration */
     body.party-pulse .confetti-piece,
     body.party-pulse .heart-piece {
         animation-duration: 2.8s !important;
     }
 
+}
+
+.shake-hint {
+    position: fixed;
+    bottom: 30px;
+    right: 25px;
+    font-size: 34px;
+    opacity: 0.8;                  /* stronger visibility */
+    z-index: 1000;
+    animation: phoneShake 2.2s ease-in-out infinite;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+}
+
+/* Real shake motion */
+@keyframes phoneShake {
+    0%   { transform: rotate(0deg) translateX(0); }
+    20%  { transform: rotate(-12deg) translateX(-4px); }
+    40%  { transform: rotate(12deg) translateX(4px); }
+    60%  { transform: rotate(-10deg) translateX(-3px); }
+    80%  { transform: rotate(10deg) translateX(3px); }
+    100% { transform: rotate(0deg) translateX(0); }
+}
+
+.dark-theme .shake-hint {
+    opacity: 1;
+    text-shadow: 
+        0 0 8px rgba(255, 0, 200, 0.7),
+        0 0 15px rgba(186, 85, 211, 0.6);
 }

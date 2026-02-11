@@ -172,6 +172,14 @@ window.addEventListener('devicemotion', e => {
     const now = Date.now();
     if (speed > 20 && now - lastShake > 1200) {
         lastShake = now;
+
+    const hint = document.getElementById("shakeHint");
+    if (hint) {
+        hint.style.opacity = "0";
+        hint.style.transform = "scale(0.8)";
+        setTimeout(() => hint.style.display = "none", 400);
+    }
+
         blowCandles(); // also triggers celebration
         
         // Extra burst of particles
@@ -185,3 +193,10 @@ window.addEventListener('devicemotion', e => {
 
 });
 
+// Show shake hint on mobile only
+window.addEventListener("load", () => {
+    if (window.innerWidth <= 768) {
+        const hint = document.getElementById("shakeHint");
+        if (hint) hint.style.display = "block";
+    }
+});
