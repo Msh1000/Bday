@@ -2,20 +2,11 @@ let celebrationActive = false;
 let celebrationTimer = null;
 const audio = document.getElementById('party-sound');
 let volumeFadeInterval = null;
+let shakeUnlocked = false;
+let shakeHintInterval = null;
+let lastShake = 0;
 
-
-document.addEventListener('click', () => {
-    audio.volume = 0;
-    audio.play().catch(err => console.log(err));
-
-    setTimeout(() => {
-        audio.pause();
-        audio.currentTime = 0;
-    }, 1000);
-}, { once: true }); // only needs one click
-
-
-
+// Toggle celebration button
 function toggleCelebration() {
     if (celebrationActive) {
         endCelebration();
@@ -28,44 +19,49 @@ function startCelebration() {
     if (celebrationActive) return;
     celebrationActive = true;
 
-    
-for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
-    setTimeout(() => {
-        createConfettiPiece();
-        if (Math.random() > 0.5) createHeartPiece();
-    }, i * 120);   
-}
+    // Unlock shake after first celebration
+    shakeUnlocked = true;
 
-    
+    // Show shake hint on all devices after celebration
+    const hint = document.getElementById("shakeHint");
+    if (hint) hint.style.display = "block";
+
+    // Launch confetti & hearts
+    for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
+        setTimeout(() => {
+            createConfettiPiece();
+            if (Math.random() > 0.5) createHeartPiece();
+        }, i * 120);   
+    }
+
+    // Update button text
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
 
+    // Show wish lines gradually
     const wish = document.getElementById('wishMessage');
     const lines = wish.querySelectorAll('span');
-
-    wish.style.display = 'block';   
+    wish.style.display = 'block';
     wish.classList.remove('hidden');
-
     lines.forEach((line, index) => {
-        setTimeout(() => {
-            line.classList.add('visible');
-        }, index * 3000); // 3 seconds per line
+        setTimeout(() => line.classList.add('visible'), index * 3000);
     });
 
-
+    // Audio fade-in
     audio.volume = 0;
     audio.currentTime = 0;
     audio.play().catch(e => console.log("Audio play failed:", e));
     fadeVolume(audio, 0, 1, 1500);
 
+    // UI effects
     document.body.classList.add('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.add('active');
     document.getElementById('hearts').classList.add('active');
-
     document.querySelectorAll('.balloon').forEach(b => b.classList.add('sped-up'));
 
     startParticles();
 
+    // Auto end celebration after 30s
     celebrationTimer = setTimeout(endCelebration, 30000);
 }
 
@@ -77,9 +73,7 @@ function endCelebration() {
 
     document.querySelector('.celebration-btn').textContent = "🎊 Celebrate!";
 
-    fadeVolume(audio, 1, 0, 1500, () => {
-        audio.pause();
-    });
+    fadeVolume(audio, 1, 0, 1500, () => audio.pause());
 
     document.body.classList.remove('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.remove('active');
@@ -87,9 +81,8 @@ function endCelebration() {
     document.querySelectorAll('.balloon').forEach(b => b.classList.remove('sped-up'));
 }
 
+// Fade audio helper
 function fadeVolume(element, start, end, durationMs, callback = () => {}) {
-
-    // Kill any previous fade
     if (volumeFadeInterval) {
         clearInterval(volumeFadeInterval);
         volumeFadeInterval = null;
@@ -113,7 +106,7 @@ function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     }, stepTime);
 }
 
-
+// Confetti & heart helpers
 function createConfettiPiece() {
     const el = document.createElement('div');
     el.className = 'confetti-piece' + (celebrationActive ? ' sped-up' : '');
@@ -137,19 +130,15 @@ function createHeartPiece() {
 
 function startParticles() {
     const isMobile = window.innerWidth <= 768;
-    const intervalMs = isMobile ? 280 : 180;          
+    const intervalMs = isMobile ? 280 : 180;
 
     const interval = setInterval(() => {
         if (!celebrationActive) {
             clearInterval(interval);
             return;
         }
-
         createConfettiPiece();
-        // Hearts less frequent
-        if (Math.random() > (isMobile ? 0.65 : 0.4)) {
-            createHeartPiece();
-        }
+        if (Math.random() > (isMobile ? 0.65 : 0.4)) createHeartPiece();
     }, intervalMs);
 }
 
@@ -158,6 +147,7 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
+// Cake and candles
 function blowCandles() {
     const candles = document.querySelector('.candles');
     const cake = document.querySelector('.cake');
@@ -175,37 +165,31 @@ function blowCandles() {
     startCelebration();
 }
 
-let lastShake = 0;
+// Shake detection
 window.addEventListener('devicemotion', e => {
+    if (!shakeUnlocked) return; // ignore shakes until unlocked
     if (!e.accelerationIncludingGravity) return;
+
     const { x, y, z } = e.accelerationIncludingGravity;
     const speed = Math.sqrt(x*x + y*y + z*z);
-    
     const now = Date.now();
+
     if (speed > 18 && now - lastShake > 1200) {
         lastShake = now;
-const hint = document.getElementById("shakeHint");
 
-if (hint) {
-    hint.style.display = "none";
-}
+        // Hide hint on shake
+        const hint = document.getElementById("shakeHint");
+        if (hint) hint.style.display = "none";
 
-// Clear existing interval so we don't stack multiple
-if (shakeHintInterval) {
-    clearInterval(shakeHintInterval);
-}
+        // Reset repeating hint interval
+        if (shakeHintInterval) clearInterval(shakeHintInterval);
+        shakeHintInterval = setInterval(() => {
+            const hint = document.getElementById("shakeHint");
+            if (hint) hint.style.display = "block";
+        }, 10000);
 
-// Start repeating reappearance every 10 seconds
-shakeHintInterval = setInterval(() => {
-    const hint = document.getElementById("shakeHint");
-    if (hint && window.innerWidth <= 768) {
-        hint.style.display = "block";
-    }
-}, 10000);
-    
+        blowCandles(); // triggers celebration
 
-        blowCandles(); // also triggers celebration
-        
         // Extra burst of particles
         for (let i = 0; i < 45; i++) {
             setTimeout(() => {
@@ -214,16 +198,10 @@ shakeHintInterval = setInterval(() => {
             }, i * 60);
         }
     }
-
 });
 
-// Show shake hint on mobile only
+// Initial setup: hide shake hint
 window.addEventListener("load", () => {
-    if (window.innerWidth <= 768) {
-        const hint = document.getElementById("shakeHint");
-        if (hint) hint.style.display = "block";
-    }
+    const hint = document.getElementById("shakeHint");
+    if (hint) hint.style.display = "none";
 });
-
-
-
