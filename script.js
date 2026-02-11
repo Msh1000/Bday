@@ -120,7 +120,7 @@ function createHeartPiece() {
     el.style.left = Math.random() * 100 + '%';
     el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
     document.getElementById('hearts').appendChild(el);
-    setTimeout(() => el.remove(), 9000);
+    setTimeout(() => el.remove(), 7000);
 }
 
 function startParticles() {
