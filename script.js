@@ -3,15 +3,18 @@ let celebrationTimer = null;
 const audio = document.getElementById('party-sound');
 let volumeFadeInterval = null;
 
-// Start audio at 0 volume
-audio.volume = 0;
-audio.play().catch(err => console.log(err)); // in case autoplay is blocked
+const audio = document.getElementById('party-sound');
 
-// Stop after 1 second
-setTimeout(() => {
-    audio.pause();
-    audio.currentTime = 0; // reset to start
-}, 1000);
+document.addEventListener('click', () => {
+    audio.volume = 0;
+    audio.play().catch(err => console.log(err));
+
+    setTimeout(() => {
+        audio.pause();
+        audio.currentTime = 0;
+    }, 1000);
+}, { once: true }); // only needs one click
+
 
 
 function toggleCelebration() {
@@ -222,4 +225,5 @@ window.addEventListener("load", () => {
         if (hint) hint.style.display = "block";
     }
 });
+
 
