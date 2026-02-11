@@ -1,6 +1,8 @@
 let celebrationActive = false;
 let celebrationTimer = null;
 const audio = document.getElementById('party-sound');
+let volumeFadeInterval = null;
+
 
 function toggleCelebration() {
     if (celebrationActive) {
@@ -14,50 +16,44 @@ function startCelebration() {
     if (celebrationActive) return;
     celebrationActive = true;
 
-    // In startCelebration()
+    
 for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
     setTimeout(() => {
         createConfettiPiece();
         if (Math.random() > 0.5) createHeartPiece();
-    }, i * 120);   // slower stagger
+    }, i * 120);   
 }
 
-    // Update button
+    
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
 
-    // Show wish message line by line
     const wish = document.getElementById('wishMessage');
     const lines = wish.querySelectorAll('span');
 
-    wish.style.display = 'block';   // bring it into layout
+    wish.style.display = 'block';   
     wish.classList.remove('hidden');
 
     lines.forEach((line, index) => {
         setTimeout(() => {
             line.classList.add('visible');
-        }, index * 2000); // 3 seconds per line
+        }, index * 3000); // 3 seconds per line
     });
 
 
-    // Music fade in
     audio.volume = 0;
     audio.currentTime = 0;
     audio.play().catch(e => console.log("Audio play failed:", e));
     fadeVolume(audio, 0, 1, 1500);
 
-    // Visuals
     document.body.classList.add('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.add('active');
     document.getElementById('hearts').classList.add('active');
 
-    // Speed up balloons
     document.querySelectorAll('.balloon').forEach(b => b.classList.add('sped-up'));
 
-    // Start particles
     startParticles();
 
-    // Auto-stop after 30 seconds
     celebrationTimer = setTimeout(endCelebration, 30000);
 }
 
@@ -67,15 +63,12 @@ function endCelebration() {
 
     clearTimeout(celebrationTimer);
 
-    // Button back
     document.querySelector('.celebration-btn').textContent = "🎊 Celebrate!";
 
-    // Music fade out
     fadeVolume(audio, 1, 0, 1500, () => {
         audio.pause();
     });
 
-    // Remove effects (message stays visible)
     document.body.classList.remove('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.remove('active');
     document.getElementById('hearts').classList.remove('active');
@@ -83,21 +76,31 @@ function endCelebration() {
 }
 
 function fadeVolume(element, start, end, durationMs, callback = () => {}) {
+
+    // Kill any previous fade
+    if (volumeFadeInterval) {
+        clearInterval(volumeFadeInterval);
+        volumeFadeInterval = null;
+    }
+
     const steps = 20;
     const stepTime = durationMs / steps;
     const stepSize = (end - start) / steps;
     let vol = start;
 
-    const interval = setInterval(() => {
+    volumeFadeInterval = setInterval(() => {
         vol += stepSize;
         element.volume = Math.max(0, Math.min(1, vol));
+
         if ((stepSize > 0 && vol >= end) || (stepSize < 0 && vol <= end)) {
-            clearInterval(interval);
+            clearInterval(volumeFadeInterval);
+            volumeFadeInterval = null;
             element.volume = end;
             callback();
         }
     }, stepTime);
 }
+
 
 function createConfettiPiece() {
     const el = document.createElement('div');
@@ -111,17 +114,18 @@ function createConfettiPiece() {
 function createHeartPiece() {
     const el = document.createElement('div');
     el.className = 'heart-piece' + (celebrationActive ? ' sped-up' : '');
-    el.textContent = '❤️';
+    el.textContent = (celebrationActive && Math.random() > 0.6) ? '🌹' : '❤️';
+    const size = Math.random() * 1 + 0.5;
+    el.style.transform = `scale(${size})`;
     el.style.left = Math.random() * 100 + '%';
     el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
     document.getElementById('hearts').appendChild(el);
-    setTimeout(() => el.remove(), 5000);
+    setTimeout(() => el.remove(), 9000);
 }
 
 function startParticles() {
-    // Lower frequency on mobile
     const isMobile = window.innerWidth <= 768;
-    const intervalMs = isMobile ? 280 : 180;          // slower on mobile
+    const intervalMs = isMobile ? 280 : 180;          
 
     const interval = setInterval(() => {
         if (!celebrationActive) {
@@ -130,7 +134,6 @@ function startParticles() {
         }
 
         createConfettiPiece();
-
         // Hearts less frequent
         if (Math.random() > (isMobile ? 0.65 : 0.4)) {
             createHeartPiece();
@@ -143,7 +146,6 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-// ── Blow candles also starts celebration ──
 function blowCandles() {
     const candles = document.querySelector('.candles');
     const cake = document.querySelector('.cake');
@@ -161,7 +163,6 @@ function blowCandles() {
     startCelebration();
 }
 
-// ── Shake detection – extra particles ──
 let lastShake = 0;
 window.addEventListener('devicemotion', e => {
     if (!e.accelerationIncludingGravity) return;
