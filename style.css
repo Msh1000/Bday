@@ -56,7 +56,7 @@ body {
 }
 
 .main-title {
-  font-size: clamp(2rem, 7vw, 3.6rem);
+  font-size: clamp(1.6rem, 6.2vw, 3rem);
   font-weight: bold;
   color: #2e2e2e;
   margin-bottom: 18px;
@@ -71,7 +71,7 @@ body {
 }
 
 .subtitle {
-  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  font-size: clamp(1rem, 3.5vw, 1.4rem);
   color: #555;
   margin-bottom: 30px;
   font-weight: 300;
@@ -114,17 +114,16 @@ body {
 
 .wish-text {
   display: none;
-  font-size: clamp(1.1rem, 3.2vw, 1.45rem);
+  font-size: clamp(1rem, 3vw, 1.4rem); /* slightly smaller & responsive */
   color: #333;
   line-height: 1.55;
   margin: 25px 0;
   text-align: center;
   text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.5);
 }
-
 /* Subtle continuous breathing pulse for the whole message */
 .wish-text.breathe {
-  animation: gentleBreathe 2.9s ease-in-out infinite alternate;
+  animation: gentleBreathe 5s ease-in-out infinite alternate;
 }
 
 @keyframes gentleBreathe {
@@ -133,11 +132,12 @@ body {
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.02);          
-    filter: brightness(2.0);         
+    transform: scale(1.02);          /* very small scale change */
+    filter: brightness(1.2);         /* tiny brightness lift */
   }
 }
 
+/* Subtle highlight/glow on individual lines when they appear */
 .wish-text span {
   display: block;
   margin-bottom: 10px;
@@ -154,23 +154,24 @@ body {
   opacity: 1;
   transform: translateY(0);
   text-shadow: 
-    0 0 8px rgba(255, 105, 180, 0.4),    
-    0 0 14px rgba(255, 182, 193, 0.25);  
+    0 0 8px rgba(255, 105, 180, 0.4),    /* soft pink glow */
+    0 0 14px rgba(255, 182, 193, 0.25);  /* lighter halo */
 }
 
+/* Optional: stronger glow in dark mode */
 .dark-theme .wish-text span.visible {
   text-shadow: 
     0 0 10px rgba(255, 105, 180, 0.55),
     0 0 18px rgba(186, 85, 211, 0.35);
 }
 
+/* Very subtle ongoing glow maintenance */
 .wish-text.glow-active span.visible {
   text-shadow: 
     0 0 6px rgba(255, 105, 180, 0.35),
     0 0 12px rgba(255, 182, 193, 0.2);
   transition: text-shadow 4s ease-in-out;
 }
-
 
 .celebration-btn {
   background: linear-gradient(45deg, #ff9a9e, #fad0c4);
