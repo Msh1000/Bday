@@ -32,17 +32,22 @@ function startCelebration() {
 
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
+    
 
     
-  // Show wish lines gradually
-    wish.classList.toggle('hidden'); // adds if missing, removes if present
-    const wish = document.getElementById('wishMessage');
-    const lines = wish.querySelectorAll('span');
-    wish.style.display = 'block';
-    lines.forEach((line, index) => {
-        setTimeout(() => line.classList.add('visible'), index * 3000);
-    });
+const wish = document.getElementById('wishMessage');
+const lines = wish.querySelectorAll('span');
 
+// Reset at start
+lines.forEach(line => {
+    line.classList.remove('visible');  // remove previous animation
+});
+wish.style.display = 'block';          // ensure container is visible
+
+// Reveal line by line
+lines.forEach((line, index) => {
+    setTimeout(() => line.classList.add('visible'), index * 3000);
+});
 
     audio.volume = 0;
     audio.currentTime = 0;
@@ -200,6 +205,7 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
 
