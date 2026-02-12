@@ -483,18 +483,21 @@ body.party-pulse {
     margin: 0 auto;
 }
 
-/* Wish text - clear fade-in */
 .wish-text {
-    display:  none;
-    font-size: clamp(1rem, 3vw, 1.4rem);
+    display: none; /* hidden until revealed */
+    font-size: clamp(1rem, 3vw, 1.4rem); /* slightly smaller & responsive */
     color: #333;
-    line-height: 1.5;
-    margin: 25px 0;
+    line-height: 1.4;
+    margin: 15px 0;
     text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.6);
-    opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 1.8s ease, transform 1.8s ease;
+
+    /* text alignment tweaks */
+    text-align: justify;       /* justify multi-line text */
+    text-align-last: center;   /* center the last line */
+    word-spacing: 0.02em;      /* subtle spacing adjustment */
+    hyphens: auto;             /* optional: hyphenate long words on small screens */
 }
+
 .wish-text span {
     display: block;
     margin-bottom: 6px;        /* ← controls vertical spacing */
@@ -616,4 +619,5 @@ body, .confetti, .hearts, .balloons {
         0 0 8px rgba(255, 0, 200, 0.7),
         0 0 15px rgba(186, 85, 211, 0.6);
 }
+
 
