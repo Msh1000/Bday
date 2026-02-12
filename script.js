@@ -35,10 +35,10 @@ function startCelebration() {
 
     
   // Show wish lines gradually
+    wish.classList.toggle('hidden'); // adds if missing, removes if present
     const wish = document.getElementById('wishMessage');
     const lines = wish.querySelectorAll('span');
     wish.style.display = 'block';
-    wish.classList.remove('hidden');
     lines.forEach((line, index) => {
         setTimeout(() => line.classList.add('visible'), index * 3000);
     });
@@ -200,5 +200,6 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
