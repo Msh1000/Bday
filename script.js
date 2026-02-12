@@ -187,6 +187,36 @@ function blowCandles() {
     startCelebration();
 }
 
+// Page Visibility handling
+function handleVisibilityChange() {
+    if (document.hidden) {
+        // Screen locked / tab backgrounded / phone slept
+        if (celebrationActive) {
+            // Pause audio immediately
+            audio.pause();
+
+            // Optional: pause animations by removing classes or stop intervals
+            // (your particles use setInterval → they will naturally slow down)
+            document.body.classList.remove('party-pulse');
+
+            // You can also stop creating new confetti/hearts
+            // (the setInterval in startParticles will keep running but slowly)
+        }
+    } else {
+        // Page is visible again
+        if (celebrationActive) {
+            // Resume audio & effects
+            audio.play().catch(() => {});   // user gesture not required here usually
+
+            document.body.classList.add('party-pulse');
+
+            // Optionally restart particles more aggressively if desired
+        }
+    }
+}
+
+document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
 // Shake detection
 window.addEventListener('devicemotion', e => {
     if (!shakeUnlocked) return; // ignore shakes until unlocked
@@ -208,7 +238,7 @@ window.addEventListener('devicemotion', e => {
         shakeHintInterval = setInterval(() => {
             const hint = document.getElementById("shakeHint");
             if (hint) hint.style.display = "block";
-        }, 8000);
+        }, 4000);
 
         blowCandles(); // triggers celebration
 
