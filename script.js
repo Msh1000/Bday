@@ -68,7 +68,7 @@ function endCelebration() {
 
     document.querySelector('.celebration-btn').textContent = "🎊 Celebrate!";
 
-    fadeVolume(audio, 1, 0, 1500, () => audio.pause());
+    fadeVolume(audio, 1, 0, 2000, () => audio.pause());
 
     document.body.classList.remove('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.remove('active');
@@ -200,4 +200,5 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
