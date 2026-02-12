@@ -525,6 +525,36 @@ body.party-pulse {
     text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
 }
 
+.wish-line {
+    opacity: 0;
+    display: block;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.wish-line.visible {
+    opacity: 1;
+}
+
+/* Subtle slower pulse */
+.wish-pulse {
+    animation: pulse 2s infinite alternate ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Line fade-in effect for quick reappear */
+.wish-line {
+    opacity: 0;
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+}
+
+
+
 /* Performance helpers */
 body, .confetti, .hearts, .balloons {
     transform: translateZ(0);           /* forces hardware acceleration */

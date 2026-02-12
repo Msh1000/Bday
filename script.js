@@ -6,7 +6,6 @@ let shakeUnlocked = false;
 let shakeHintInterval = null;
 let lastShake = 0;
 
-// Toggle celebration button
 function toggleCelebration() {
     if (celebrationActive) {
         endCelebration();
@@ -19,14 +18,11 @@ function startCelebration() {
     if (celebrationActive) return;
     celebrationActive = true;
 
-    // Unlock shake after first celebration
     shakeUnlocked = true;
 
-    // Show shake hint on all devices after celebration
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "block";
 
-    // Launch confetti & hearts
     for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
         setTimeout(() => {
             createConfettiPiece();
@@ -34,11 +30,11 @@ function startCelebration() {
         }, i * 120);   
     }
 
-    // Update button text
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
 
-    // Show wish lines gradually
+    
+  // Show wish lines gradually
     const wish = document.getElementById('wishMessage');
     const lines = wish.querySelectorAll('span');
     wish.style.display = 'block';
@@ -47,13 +43,12 @@ function startCelebration() {
         setTimeout(() => line.classList.add('visible'), index * 3000);
     });
 
-    // Audio fade-in
+
     audio.volume = 0;
     audio.currentTime = 0;
     audio.play().catch(e => console.log("Audio play failed:", e));
     fadeVolume(audio, 0, 1, 1500);
 
-    // UI effects
     document.body.classList.add('dark-theme', 'party-pulse');
     document.getElementById('confetti').classList.add('active');
     document.getElementById('hearts').classList.add('active');
@@ -186,7 +181,7 @@ window.addEventListener('devicemotion', e => {
         shakeHintInterval = setInterval(() => {
             const hint = document.getElementById("shakeHint");
             if (hint) hint.style.display = "block";
-        }, 3000);
+        }, 8000);
 
         blowCandles(); // triggers celebration
 
@@ -205,6 +200,4 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
-
-
 
