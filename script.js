@@ -23,6 +23,7 @@ function startCelebration() {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "block";
 
+    // ── Confetti & hearts creation ──
     for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
         setTimeout(() => {
             createConfettiPiece();
@@ -32,22 +33,42 @@ function startCelebration() {
 
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
-    
 
-    
+    // ── Reset and animate wish message ──
 const wish = document.getElementById('wishMessage');
-const lines = wish.querySelectorAll('span');
+if (wish) {
+    // Reset everything
+    wish.style.display = 'none';
+    wish.classList.add('hidden');
+    wish.classList.remove('breathe', 'glow-active');
 
-// Reset at start
-lines.forEach(line => {
-    line.classList.remove('visible');  // remove previous animation
-});
-wish.style.display = 'block';          // ensure container is visible
+    const lines = wish.querySelectorAll('span');
+    lines.forEach(line => {
+        line.classList.remove('visible');
+    });
 
-// Reveal line by line
-lines.forEach((line, index) => {
-    setTimeout(() => line.classList.add('visible'), index * 3000);
-});
+    setTimeout(() => {
+        wish.style.display = 'block';
+        wish.classList.remove('hidden');
+
+        // Reveal lines one by one
+        lines.forEach((line, index) => {
+            setTimeout(() => {
+                line.classList.add('visible');
+            }, index * 4200 + 400);   // slightly longer stagger feels more elegant
+        });
+
+        // Start subtle breathing pulse after all lines are done
+        const lastLineDelay = (lines.length - 1) * 4300 + 410;
+        setTimeout(() => {
+            wish.classList.add('breathe');
+            wish.classList.add('glow-active');   
+        }, lastLineDelay + 1200);   
+
+    }, 80);   // small delay to make reset feel clean
+}
+
+
 
     audio.volume = 0;
     audio.currentTime = 0;
@@ -61,7 +82,6 @@ lines.forEach((line, index) => {
 
     startParticles();
 
-    // Auto end celebration after 30s
     celebrationTimer = setTimeout(endCelebration, 30000);
 }
 
@@ -79,6 +99,8 @@ function endCelebration() {
     document.getElementById('confetti').classList.remove('active');
     document.getElementById('hearts').classList.remove('active');
     document.querySelectorAll('.balloon').forEach(b => b.classList.remove('sped-up'));
+    const wish = document.getElementById('wishMessage');
+    wish.classList.remove('breathe', 'glow-active');
 }
 
 // Fade audio helper
