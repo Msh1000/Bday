@@ -186,7 +186,7 @@ window.addEventListener('devicemotion', e => {
         shakeHintInterval = setInterval(() => {
             const hint = document.getElementById("shakeHint");
             if (hint) hint.style.display = "block";
-        }, 8000);
+        }, 3000);
 
         blowCandles(); // triggers celebration
 
@@ -205,5 +205,6 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
