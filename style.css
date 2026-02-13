@@ -288,15 +288,15 @@ body.dark-theme .balloon {
 
 .confetti-piece {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
   background: #b0b0b0;
   animation: confettiFall 0.5s linear infinite;
 }
 
 .heart-piece {
   position: absolute;
-  font-size: 20px;
+  font-size: 13px;
   animation: heartFall 0.5s linear infinite;
 }
 
@@ -407,9 +407,9 @@ body.dark-theme {
   }
   
   .confetti-piece, .heart-piece {
-    width: 6.5px;
-    height: 6.5px;
-    font-size: 13.5px;
+    width: 6px;
+    height: 6px;
+    font-size: 12.5px;
   }
 
   .balloon {
@@ -479,4 +479,3 @@ body {
 html {
   overscroll-behavior: none;
 }
-
