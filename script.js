@@ -82,7 +82,7 @@ if (wish) {
 
     startParticles();
 
-    celebrationTimer = setTimeout(endCelebration, 30000);
+    celebrationTimer = setTimeout(endCelebration, 35000);
 }
 
 function endCelebration() {
@@ -135,7 +135,7 @@ function createConfettiPiece() {
     el.style.left = Math.random() * 100 + '%';
     el.style.backgroundColor = getRandomColor();
     document.getElementById('confetti').appendChild(el);
-    setTimeout(() => el.remove(), 4000);
+    setTimeout(() => el.remove(), 5000);
 }
 
 function createHeartPiece() {
@@ -190,27 +190,15 @@ function blowCandles() {
 // Page Visibility handling
 function handleVisibilityChange() {
     if (document.hidden) {
-        // Screen locked / tab backgrounded / phone slept
         if (celebrationActive) {
-            // Pause audio immediately
             audio.pause();
-
-            // Optional: pause animations by removing classes or stop intervals
-            // (your particles use setInterval → they will naturally slow down)
             document.body.classList.remove('party-pulse');
-
-            // You can also stop creating new confetti/hearts
-            // (the setInterval in startParticles will keep running but slowly)
         }
     } else {
-        // Page is visible again
         if (celebrationActive) {
-            // Resume audio & effects
-            audio.play().catch(() => {});   // user gesture not required here usually
+            audio.play().catch(() => {});   
 
             document.body.classList.add('party-pulse');
-
-            // Optionally restart particles more aggressively if desired
         }
     }
 }
@@ -257,6 +245,7 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
 
