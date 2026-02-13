@@ -407,9 +407,9 @@ body.dark-theme {
   }
   
   .confetti-piece, .heart-piece {
-    width: 8px;
-    height: 8px;
-    font-size: 16px;
+    width: 6.5px;
+    height: 6.5px;
+    font-size: 13.5px;
   }
 
   .balloon {
@@ -479,3 +479,4 @@ body {
 html {
   overscroll-behavior: none;
 }
+
