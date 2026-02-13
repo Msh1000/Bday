@@ -243,11 +243,11 @@ window.addEventListener('devicemotion', e => {
         blowCandles(); // triggers celebration
 
         // Extra burst of particles
-        for (let i = 0; i < 45; i++) {
+        for (let i = 0; i < 35; i++) {
             setTimeout(() => {
                 createConfettiPiece();
                 createHeartPiece();
-            }, i * 60);
+            }, i * 50);
         }
     }
 });
@@ -257,6 +257,7 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
 
