@@ -132,7 +132,7 @@ body {
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.03);          /* very small scale change */
+    transform: scale(1.02);          /* very small scale change */
     filter: brightness(1.2);         /* tiny brightness lift */
   }
 }
@@ -199,40 +199,78 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
+  overflow: hidden;
 }
 
 .balloon {
   position: absolute;
+  bottom: -120px;
   width: 32px;
   height: 42px;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  animation: balloonFloat 14s ease-in-out infinite;
-  opacity: 0.75;
+  border-radius: 50% 50% 45% 45%;
+  left: calc((100% / 9) * var(--i));
+  transform-origin: center bottom;
+
+  animation: floatUp calc(6s + 4s * var(--rand)) linear infinite;
+  animation-delay: var(--delay);
 }
 
+/* Knot */
 .balloon::after {
   content: '';
   position: absolute;
-  bottom: -40px;
+  bottom: -6px;
   left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 50px;
-  background: #5a4a3e;
-  opacity: 0.7;
+  width: 6px;
+  height: 6px;
+  background: inherit;
+  transform: translateX(-50%) rotate(45deg);
 }
 
-.balloon:nth-child(1) { background: #ff6b6b; left: 10%; animation-delay: 0s; }
-.balloon:nth-child(2) { background: #4ecdc4; left: 22%; animation-delay: 1.2s; }
-.balloon:nth-child(3) { background: #45b7d1; left: 35%; animation-delay: 2.4s; }
-.balloon:nth-child(4) { background: #96ceb4; left: 68%; animation-delay: 1.8s; }
-.balloon:nth-child(5) { background: #ffeaa7; left: 78%; animation-delay: 0.6s; }
-.balloon:nth-child(6) { background: #fd79a8; left: 88%; animation-delay: 3s; }
+/* String */
+.balloon::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 2px;
+  height: 65px;
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateX(-50%);
+}
 
-@keyframes balloonFloat {
-  0%, 100% { transform: translateY(100vh) rotate(0deg); }
-  50%      { transform: translateY(-15vh) rotate(8deg); }
+/* Combined float + sway */
+@keyframes floatUp {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(-3deg);
+  }
+
+  25% {
+    transform: translateX(-50%) translateY(-30vh) translateX(10px) rotate(3deg);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-60vh) translateX(15px) rotate(-2deg);
+  }
+
+  75% {
+    transform: translateX(-50%) translateY(-90vh) translateX(10px) rotate(2deg);
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(-120vh) translateX(-10px) rotate(-3deg);
+  }
+}
+
+/* Make balloon strings white(ish) in dark mode */
+.dark-theme .balloon::before {
+  background: rgba(255, 255, 255, 0.75);   
+}
+
+/* Much faster during celebration / dark mode */
+body.party-pulse .balloon,
+body.dark-theme .balloon {
+  animation: floatUp calc(2.6s + 1.6s * var(--rand)) linear infinite !important;
 }
 
 .confetti, .hearts {
@@ -373,7 +411,30 @@ body.dark-theme {
     height: 8px;
     font-size: 16px;
   }
+
+  .balloon {
+    animation-duration: calc(6s + 4s * var(--rand)) !important;  /* already shorter than desktop */
+  }
+
+  body.party-pulse .balloon {
+    animation: floatUp calc(2.4s + 1.5s * var(--rand)) linear infinite !important;
+  }
+
+  /* Make falling pieces much quicker → they disappear faster = less overlapping work */
+  .confetti-piece, .heart-piece {
+    animation-duration: 2.8s !important;
+  }
+
+  body.party-pulse .confetti-piece,
+  body.party-pulse .heart-piece {
+    animation-duration: 1.8s !important;   /* very fast cleanup */
+  }
+
+  /* Fewer / smaller pieces overall */
+  .confetti-piece { width: 7px; height: 7px; }
+  .heart-piece   { font-size: 16px; }
 }
+
 
 @media (max-width: 480px) {
   .container {
@@ -419,5 +480,4 @@ body {
 
 html {
   overscroll-behavior: none;
-
 }
