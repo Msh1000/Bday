@@ -178,7 +178,7 @@ body {
   border: none;
   color: #333;
   padding: 14px 32px;
-  font-size: clamp(1rem, 3vw, 1.15rem);
+ font-size: clamp(0.95rem, 1.8vw + 0.4rem, 1.1rem);
   border-radius: 50px;
   cursor: pointer;
   margin: 20px 12px;
@@ -291,13 +291,13 @@ body.dark-theme .balloon {
   width: 10px;
   height: 10px;
   background: #b0b0b0;
-  animation: confettiFall 3.5s linear infinite;
+  animation: confettiFall 0.5s linear infinite;
 }
 
 .heart-piece {
   position: absolute;
   font-size: 20px;
-  animation: heartFall 4.5s linear infinite;
+  animation: heartFall 0.5s linear infinite;
 }
 
 @keyframes confettiFall {
@@ -313,7 +313,7 @@ body.dark-theme .balloon {
 /* Sped-up mode */
 .confetti-piece.sped-up,
 .heart-piece.sped-up {
-  animation-duration: 2.2s !important;
+  animation-duration: 9s !important;
 }
 
 .balloon.sped-up {
@@ -413,26 +413,24 @@ body.dark-theme {
   }
 
   .balloon {
-    animation-duration: calc(6s + 4s * var(--rand)) !important;  /* already shorter than desktop */
+    animation-duration: calc(6s + 4s * var(--rand)) !important;  
   }
 
   body.party-pulse .balloon {
     animation: floatUp calc(2.4s + 1.5s * var(--rand)) linear infinite !important;
   }
 
-  /* Make falling pieces much quicker → they disappear faster = less overlapping work */
   .confetti-piece, .heart-piece {
-    animation-duration: 2.8s !important;
+    animation-duration: 6.8s !important;
   }
 
   body.party-pulse .confetti-piece,
   body.party-pulse .heart-piece {
-    animation-duration: 1.8s !important;   /* very fast cleanup */
+    animation-duration: 6.8s !important;   
   }
 
-  /* Fewer / smaller pieces overall */
-  .confetti-piece { width: 7px; height: 7px; }
-  .heart-piece   { font-size: 16px; }
+  .confetti-piece { width: 8.5px; height: 8.5px; }
+  .heart-piece   { font-size: 17px; }
 }
 
 
