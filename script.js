@@ -226,17 +226,18 @@ window.addEventListener('devicemotion', e => {
         shakeHintInterval = setInterval(() => {
             const hint = document.getElementById("shakeHint");
             if (hint) hint.style.display = "block";
-        }, 4000);
+        }, 4500);
 
         blowCandles(); // triggers celebration
 
         // Extra burst of particles
-        for (let i = 0; i < 35; i++) {
-            setTimeout(() => {
-                createConfettiPiece();
-                createHeartPiece();
-            }, i * 50);
-        }
+        // New shake burst — much bigger & faster-feeling explosion
+for (let i = 0; i < 80; i++) {               // ← changed: from 35 → 120 pieces
+    setTimeout(() => {
+        createConfettiPiece();
+        if (Math.random() > 0.35) createHeartPiece();   // ← changed: hearts appear more often (65% chance instead of 100%)
+    }, i * 25);   // ← changed: from 50 ms → 12 ms delay between each piece
+}
     }
 });
 
@@ -245,6 +246,7 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
 
