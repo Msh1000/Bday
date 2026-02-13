@@ -132,7 +132,7 @@ body {
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.02);          /* very small scale change */
+    transform: scale(1.03);          /* very small scale change */
     filter: brightness(1.2);         /* tiny brightness lift */
   }
 }
@@ -419,4 +419,5 @@ body {
 
 html {
   overscroll-behavior: none;
+
 }
