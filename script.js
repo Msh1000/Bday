@@ -141,7 +141,7 @@ function createConfettiPiece() {
 function createHeartPiece() {
     const el = document.createElement('div');
     el.className = 'heart-piece' + (celebrationActive ? ' sped-up' : '');
-    el.textContent = (celebrationActive && Math.random() > 0.6) ? : '❤️';
+    el.textContent = (celebrationActive && Math.random() > 0.6) ? '🌹' : '❤️';
     const size = Math.random() * 1 + 0.5;
     el.style.transform = `scale(${size})`;
     el.style.left = Math.random() * 100 + '%';
@@ -245,6 +245,7 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
 
