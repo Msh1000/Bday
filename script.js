@@ -235,8 +235,8 @@ window.addEventListener('devicemotion', e => {
 for (let i = 0; i < 80; i++) {               // ← changed: from 35 → 120 pieces
     setTimeout(() => {
         createConfettiPiece();
-        if (Math.random() > 0.35) createHeartPiece();   // ← changed: hearts appear more often (65% chance instead of 100%)
-    }, i * 25);   // ← changed: from 50 ms → 12 ms delay between each piece
+        if (Math.random() > 0.65) createHeartPiece();   // ← changed: hearts appear more often (65% chance instead of 100%)
+    }, i * 50);   // ← changed: from 50 ms → 12 ms delay between each piece
 }
     }
 });
@@ -246,6 +246,7 @@ window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
+
 
 
 
