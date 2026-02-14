@@ -114,14 +114,14 @@ body {
 
 .wish-text {
   display: none;
-  font-size: clamp(1rem, 3vw, 1.4rem); /* slightly smaller & responsive */
+  font-size: clamp(1rem, 3vw, 1.4rem);
   color: #333;
   line-height: 1.55;
   margin: 25px 0;
   text-align: center;
   text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.5);
 }
-/* Subtle continuous breathing pulse for the whole message */
+
 .wish-text.breathe {
   animation: gentleBreathe 5s ease-in-out infinite alternate;
 }
@@ -132,12 +132,11 @@ body {
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.02);          /* very small scale change */
-    filter: brightness(1.2);         /* tiny brightness lift */
+    transform: scale(1.02);
+    filter: brightness(1.2);
   }
 }
 
-/* Subtle highlight/glow on individual lines when they appear */
 .wish-text span {
   display: block;
   margin-bottom: 10px;
@@ -154,18 +153,16 @@ body {
   opacity: 1;
   transform: translateY(0);
   text-shadow: 
-    0 0 8px rgba(255, 105, 180, 0.4),    /* soft pink glow */
-    0 0 14px rgba(255, 182, 193, 0.25);  /* lighter halo */
+    0 0 8px rgba(255, 105, 180, 0.4),
+    0 0 14px rgba(255, 182, 193, 0.25);
 }
 
-/* Optional: stronger glow in dark mode */
 .dark-theme .wish-text span.visible {
   text-shadow: 
     0 0 10px rgba(255, 105, 180, 0.55),
     0 0 18px rgba(186, 85, 211, 0.35);
 }
 
-/* Very subtle ongoing glow maintenance */
 .wish-text.glow-active span.visible {
   text-shadow: 
     0 0 6px rgba(255, 105, 180, 0.35),
@@ -178,7 +175,7 @@ body {
   border: none;
   color: #333;
   padding: 14px 32px;
- font-size: clamp(0.95rem, 1.8vw + 0.4rem, 1.1rem);
+  font-size: clamp(0.95rem, 1.8vw + 0.4rem, 1.1rem);
   border-radius: 50px;
   cursor: pointer;
   margin: 20px 12px;
@@ -204,70 +201,60 @@ body {
 
 .balloon {
   position: absolute;
-  bottom: -100px;          
-  width: 24px;            
-  height: 32px;            
+  bottom: -100px;
+  width: 24px;
+  height: 32px;
   border-radius: 50% 50% 45% 45%;
   left: calc((100% / 9) * var(--i));
   transform-origin: center bottom;
-
   animation: floatUp calc(6s + 4s * var(--rand)) linear infinite;
   animation-delay: var(--delay);
 }
 
-/* Knot */
 .balloon::after {
   content: '';
   position: absolute;
-  bottom: -5px;          
-  width: 5px;              
+  bottom: -5px;
+  width: 5px;
   height: 5px;
   left: 50%;
   background: inherit;
   transform: translateX(-50%) rotate(45deg);
 }
 
-/* String */
 .balloon::before {
   content: '';
   position: absolute;
   top: 100%;
   left: 50%;
- width: 2px;              
+  width: 2px;
   height: 55px;
   background: rgba(0, 0, 0, 0.4);
   transform: translateX(-50%);
 }
 
-/* Combined float + sway */
 @keyframes floatUp {
   0% {
     transform: translateX(-50%) translateY(0) rotate(-3deg);
   }
-
   25% {
     transform: translateX(-50%) translateY(-30vh) translateX(10px) rotate(3deg);
   }
-
   50% {
     transform: translateX(-50%) translateY(-60vh) translateX(15px) rotate(-2deg);
   }
-
   75% {
     transform: translateX(-50%) translateY(-90vh) translateX(10px) rotate(2deg);
   }
-
   100% {
     transform: translateX(-50%) translateY(-120vh) translateX(-10px) rotate(-3deg);
   }
 }
 
-/* Make balloon strings white(ish) in dark mode */
 .dark-theme .balloon::before {
-  background: rgba(255, 255, 255, 0.75);   
+  background: rgba(255, 255, 255, 0.75);
 }
 
-/* Much faster during celebration / dark mode */
 body.party-pulse .balloon,
 body.dark-theme .balloon {
   animation: floatUp calc(2.6s + 1.6s * var(--rand)) linear infinite !important;
@@ -286,47 +273,57 @@ body.dark-theme .balloon {
   opacity: 1;
 }
 
+/* ── Confetti: fixed width, shorter varying length, instant start ── */
 .confetti-piece {
   position: absolute;
+  width: 7px;                        /* fixed width – feels classic */
   width: 6px;
-  height: 6px;
-  background: #b0b0b0;
+--length-factor: calc(0.3 + 0.4 * var(--rand-length, 0.8));
+height: calc(7px + 8px * var(--length-factor));               /* ~8–13 px */
+  background: #b0b0b0;               /* fallback */
+  border-radius: 1px;                /* subtle paper edges */
   animation: confettiFall 0.5s linear infinite;
+  animation-delay: 0s !important;
+  will-change: transform, opacity;
+  transform-origin: center;
 }
 
-.heart-piece {
-  position: absolute;
-  font-size: 13px;
-  animation: heartFall 0.5s linear infinite;
+.confetti-piece.sped-up {
+  animation-duration: 6s !important;   /* reasonably fast */
 }
 
 @keyframes confettiFall {
-  0%   { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(120vh) rotate(540deg); opacity: 0; }
+  0%   { 
+    transform: translateY(-100vh) rotate(0deg); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: translateY(120vh) rotate(720deg); 
+    opacity: 0; 
+  }
+}
+
+/* ── Hearts: more transparent version ── */
+.heart-piece {
+  position: absolute;
+  font-size: clamp(12px, 2.8vw, 18px);
+  opacity: 0.38;                    /* lowered from 0.52 → noticeably more subtle */
+  color: rgba(255, 60, 110, 0.82);  /* slightly softer base color */
+  animation: heartFall 0.5s linear infinite;
+  will-change: transform, opacity;
+}
+
+.heart-piece:not(:contains("🌹")) {
+  opacity: 0.32;                    /* plain hearts even more faded */
+}
+
+.heart-piece.sped-up {
+  animation-duration: 9s !important;
 }
 
 @keyframes heartFall {
   0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(120vh) translateX(var(--drift, 0)) rotate(720deg); opacity: 0; }
-}
-
-/* Sped-up mode */
-.confetti-piece.sped-up,
-.heart-piece.sped-up {
-  animation-duration: 9s !important;
-}
-
-.balloon.sped-up {
-  animation-duration: 5s !important;
-}
-
-body.party-pulse {
-  animation: partyPulse 1.3s ease-in-out infinite alternate;
-}
-
-@keyframes partyPulse {
-  0%   { background-color: rgba(40, 0, 80, 0.08); }
-  100% { background-color: rgba(90, 0, 140, 0.18); }
 }
 
 /* Dark theme */
@@ -390,7 +387,7 @@ body.dark-theme {
   80%      { transform: rotate(12deg) translateX(4px); }
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
   .birthday-card {
     padding: 25px 18px;
@@ -406,33 +403,14 @@ body.dark-theme {
     margin: 12px 8px;
   }
   
-  .confetti-piece, .heart-piece {
-    width: 6px;
-    height: 6px;
-    font-size: 12.5px;
+  .confetti-piece {
+    --size: calc(6px + 8px * var(--rand-size, 0.5));   /* slightly smaller range on mobile */
   }
-
-  .balloon {
-    animation-duration: calc(6s + 4s * var(--rand)) !important;  
-  }
-
+  
   body.party-pulse .balloon {
     animation: floatUp calc(2.4s + 1.5s * var(--rand)) linear infinite !important;
   }
-
-  .confetti-piece, .heart-piece {
-    animation-duration: 6.8s !important;
-  }
-
-  body.party-pulse .confetti-piece,
-  body.party-pulse .heart-piece {
-    animation-duration: 6.8s !important;   
-  }
-
-  .confetti-piece { width: 8.5px; height: 8.5px; }
-  .heart-piece   { font-size: 17px; }
 }
-
 
 @media (max-width: 480px) {
   .container {
@@ -456,25 +434,23 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;          
-  overscroll-behavior: none; 
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
-
 body {
-  position: fixed;         
+  position: fixed;
   width: 100%;
   height: 100%;
 }
 
 .container {
-  height: 100vh;             
-  min-height: -webkit-fill-available; 
+  height: 100vh;
+  min-height: -webkit-fill-available;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 
 html {
   overscroll-behavior: none;

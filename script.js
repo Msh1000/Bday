@@ -23,52 +23,58 @@ function startCelebration() {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "block";
 
-    // ── Confetti & hearts creation ──
-    for (let i = 0; i < (window.innerWidth <= 768 ? 30 : 50); i++) {
+    // ── Confetti & hearts creation (combined - original style) ──
+    const isMobile = window.innerWidth <= 768;
+
+    // 🎉 More confetti
+    const confettiCount = isMobile ? 70 : 140;
+
+    // ❤️ Fewer hearts
+    const heartCount = isMobile ? 15 : 25;
+
+    for (let i = 0; i < confettiCount; i++) {
         setTimeout(() => {
             createConfettiPiece();
-            if (Math.random() > 0.5) createHeartPiece();
-        }, i * 120);   
+        }, i * 85);
     }
+
+    for (let i = 0; i < heartCount; i++) {
+        setTimeout(() => {
+            createHeartPiece();
+        }, i * 120);
+    }
+
 
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
 
-    // ── Reset and animate wish message ──
-const wish = document.getElementById('wishMessage');
-if (wish) {
-    // Reset everything
-    wish.style.display = 'none';
-    wish.classList.add('hidden');
-    wish.classList.remove('breathe', 'glow-active');
+    // ── Wish message animation ──
+    const wish = document.getElementById('wishMessage');
+    if (wish) {
+        wish.style.display = 'none';
+        wish.classList.add('hidden');
+        wish.classList.remove('breathe', 'glow-active');
 
-    const lines = wish.querySelectorAll('span');
-    lines.forEach(line => {
-        line.classList.remove('visible');
-    });
+        const lines = wish.querySelectorAll('span');
+        lines.forEach(line => line.classList.remove('visible'));
 
-    setTimeout(() => {
-        wish.style.display = 'block';
-        wish.classList.remove('hidden');
-
-        // Reveal lines one by one
-        lines.forEach((line, index) => {
-            setTimeout(() => {
-                line.classList.add('visible');
-            }, index * 4200 + 400);   // slightly longer stagger feels more elegant
-        });
-
-        // Start subtle breathing pulse after all lines are done
-        const lastLineDelay = (lines.length - 1) * 4300 + 410;
         setTimeout(() => {
-            wish.classList.add('breathe');
-            wish.classList.add('glow-active');   
-        }, lastLineDelay + 1200);   
+            wish.style.display = 'block';
+            wish.classList.remove('hidden');
 
-    }, 80);   // small delay to make reset feel clean
-}
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.classList.add('visible');
+                }, index * 4200 + 400);
+            });
 
-
+            const lastLineDelay = (lines.length - 1) * 4300 + 410;
+            setTimeout(() => {
+                wish.classList.add('breathe');
+                wish.classList.add('glow-active');
+            }, lastLineDelay + 1200);
+        }, 80);
+    }
 
     audio.volume = 0;
     audio.currentTime = 0;
@@ -82,7 +88,7 @@ if (wish) {
 
     startParticles();
 
-    celebrationTimer = setTimeout(endCelebration, 35000);
+    celebrationTimer = setTimeout(endCelebration, 35000);   // original 35 seconds
 }
 
 function endCelebration() {
@@ -103,7 +109,7 @@ function endCelebration() {
     wish.classList.remove('breathe', 'glow-active');
 }
 
-// Fade audio helper
+// Fade audio helper (unchanged)
 function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     if (volumeFadeInterval) {
         clearInterval(volumeFadeInterval);
@@ -128,16 +134,24 @@ function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     }, stepTime);
 }
 
-// Confetti & heart helpers
+// ── Confetti creation (fixed width, short length variation) ──
 function createConfettiPiece() {
     const el = document.createElement('div');
     el.className = 'confetti-piece' + (celebrationActive ? ' sped-up' : '');
     el.style.left = Math.random() * 100 + '%';
     el.style.backgroundColor = getRandomColor();
+
+    const randLength = Math.random();
+    el.style.setProperty('--rand-length', randLength);
+
+    const randomRotation = Math.random() * 360;
+    el.style.transform = `rotate(${randomRotation}deg)`;
+
     document.getElementById('confetti').appendChild(el);
     setTimeout(() => el.remove(), 7000);
 }
 
+// ── Heart creation (unchanged) ──
 function createHeartPiece() {
     const el = document.createElement('div');
     el.className = 'heart-piece' + (celebrationActive ? ' sped-up' : '');
@@ -152,42 +166,36 @@ function createHeartPiece() {
 
 function startParticles() {
     const isMobile = window.innerWidth <= 768;
-    const intervalMs = isMobile ? 280 : 180;
 
-    const interval = setInterval(() => {
+    const confettiIntervalMs = isMobile ? 70 : 45;
+    const heartIntervalMs = isMobile ? 900 : 700;
+
+    const confettiInterval = setInterval(() => {
         if (!celebrationActive) {
-            clearInterval(interval);
+            clearInterval(confettiInterval);
             return;
         }
         createConfettiPiece();
-        if (Math.random() > (isMobile ? 0.65 : 0.4)) createHeartPiece();
-    }, intervalMs);
+    }, confettiIntervalMs);
+
+    const heartInterval = setInterval(() => {
+        if (!celebrationActive) {
+            clearInterval(heartInterval);
+            return;
+        }
+        createHeartPiece();
+    }, heartIntervalMs);
 }
+
 
 function getRandomColor() {
     const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-// Cake and candles
-function blowCandles() {
-    const candles = document.querySelector('.candles');
-    const cake = document.querySelector('.cake');
-    
-    candles.style.animation = 'none';
-    candles.style.opacity = '0.3';
-    cake.innerHTML = '🎂✨';
-    
-    setTimeout(() => {
-        candles.style.animation = 'candleFlicker 1.5s ease-in-out infinite alternate';
-        candles.style.opacity = '1';
-        cake.innerHTML = '🎂';
-    }, 3000);
 
-    startCelebration();
-}
 
-// Page Visibility handling
+// Page visibility (unchanged)
 function handleVisibilityChange() {
     if (document.hidden) {
         if (celebrationActive) {
@@ -196,8 +204,7 @@ function handleVisibilityChange() {
         }
     } else {
         if (celebrationActive) {
-            audio.play().catch(() => {});   
-
+            audio.play().catch(() => {});
             document.body.classList.add('party-pulse');
         }
     }
@@ -205,9 +212,9 @@ function handleVisibilityChange() {
 
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
-// Shake detection
+// Shake detection (unchanged except burst count)
 window.addEventListener('devicemotion', e => {
-    if (!shakeUnlocked) return; // ignore shakes until unlocked
+    if (!shakeUnlocked) return;
     if (!e.accelerationIncludingGravity) return;
 
     const { x, y, z } = e.accelerationIncludingGravity;
@@ -217,42 +224,29 @@ window.addEventListener('devicemotion', e => {
     if (speed > 18 && now - lastShake > 1200) {
         lastShake = now;
 
-        // Hide hint on shake
         const hint = document.getElementById("shakeHint");
         if (hint) hint.style.display = "none";
 
-        // Reset repeating hint interval
         if (shakeHintInterval) clearInterval(shakeHintInterval);
         shakeHintInterval = setInterval(() => {
             const hint = document.getElementById("shakeHint");
             if (hint) hint.style.display = "block";
         }, 4500);
 
-        blowCandles(); // triggers celebration
+        blowCandles();
 
-        // Extra burst of particles
-        // New shake burst — much bigger & faster-feeling explosion
-for (let i = 0; i < 80; i++) {               // ← changed: from 35 → 120 pieces
-    setTimeout(() => {
-        createConfettiPiece();
-        if (Math.random() > 0.65) createHeartPiece();   // ← changed: hearts appear more often (65% chance instead of 100%)
-    }, i * 50);   // ← changed: from 50 ms → 12 ms delay between each piece
-}
+        // Shake burst - moderate amount
+        for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+                createConfettiPiece();
+                if (Math.random() > 0.65) createHeartPiece();
+            }, i * 40);
+        }
     }
 });
 
-// Initial setup: hide shake hint
+// Initial setup
 window.addEventListener("load", () => {
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "none";
 });
-
-
-
-
-
-
-
-
-
-
