@@ -348,7 +348,7 @@ body.dark-theme {
 }
 
 .dark-theme .wish-text.heartbeat {
-  animation: heartbeatDark 3.2s ease-in-out infinite;
+  animation: heartbeatDark 3.4s ease-in-out infinite;
 }
 
 @keyframes heartbeatDark {
@@ -454,4 +454,29 @@ body {
 
 html {
   overscroll-behavior: none;
+}
+
+@keyframes cardPulsePhase {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    filter: brightness(1);
+  }
+  35% {
+    transform: scale(1.035);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.20),
+                0 0 50px rgba(255, 105, 180, 0.55);
+    filter: brightness(1.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    filter: brightness(1);
+  }
+}
+
+/* Optional: slightly more intense version for dark mode or last line */
+.dark-theme .birthday-card.pulse {
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.45),
+              0 0 60px rgba(186, 85, 211, 0.65) !important;
 }

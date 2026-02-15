@@ -1,10 +1,12 @@
 let celebrationActive = false;
 let celebrationTimer = null;
-const audio = document.getElementById('party-sound');
 let volumeFadeInterval = null;
 let shakeUnlocked = false;
 let shakeHintInterval = null;
 let lastShake = 0;
+
+const audio = document.getElementById('party-sound');
+
 
 function toggleCelebration() {
     if (celebrationActive) {
@@ -14,36 +16,21 @@ function toggleCelebration() {
     }
 }
 
+function getRandomColor() {
+    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+
 function startCelebration() {
     if (celebrationActive) return;
     celebrationActive = true;
+    
 
     shakeUnlocked = true;
 
     const hint = document.getElementById("shakeHint");
     if (hint) hint.style.display = "block";
-
-    // ── Confetti & hearts creation (combined - original style) ──
-    const isMobile = window.innerWidth <= 768;
-
-    // 🎉 More confetti
-    const confettiCount = isMobile ? 70 : 140;
-
-    // ❤️ Fewer hearts
-    const heartCount = isMobile ? 15 : 25;
-
-    for (let i = 0; i < confettiCount; i++) {
-        setTimeout(() => {
-            createConfettiPiece();
-        }, i * 85);
-    }
-
-    for (let i = 0; i < heartCount; i++) {
-        setTimeout(() => {
-            createHeartPiece();
-        }, i * 120);
-    }
-
 
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
@@ -58,23 +45,46 @@ function startCelebration() {
         const lines = wish.querySelectorAll('span');
         lines.forEach(line => line.classList.remove('visible'));
 
+        const lineSpacing = 3500;
+        const firstLineDelay = 5500;
+
+setTimeout(() => {
+    wish.style.display = 'block';
+    wish.classList.remove('hidden');
+
+    const card = document.querySelector('.birthday-card');
+
+    lines.forEach((line, index) => {
         setTimeout(() => {
-            wish.style.display = 'block';
-            wish.classList.remove('hidden');
+            line.classList.add('visible');
 
-            lines.forEach((line, index) => {
+            // Trigger pulse only if celebration is still active
+            if (celebrationActive && card) {
+                // Remove any leftover animation class first (prevents overlap glitches)
+                card.classList.remove('pulse');
+
+                // Small delay helps the CSS animation restart cleanly
                 setTimeout(() => {
-                    line.classList.add('visible');
-                }, index * 4200 + 400);
-            });
+                    card.classList.add('pulse');
 
-            const lastLineDelay = (lines.length - 1) * 4300 + 410;
-            setTimeout(() => {
-                wish.classList.add('breathe');
-                wish.classList.add('glow-active');
-            }, lastLineDelay + 1200);
-        }, 80);
-    }
+                    // Auto-remove class after animation completes so it can be re-triggered
+                    setTimeout(() => {
+                        card.classList.remove('pulse');
+                    }, 1600);   // match or slightly longer than animation duration
+                }, 20);
+            }
+        }, index * lineSpacing + firstLineDelay);
+    });
+
+    const lastLineDelay = (lines.length - 1) * lineSpacing + firstLineDelay;
+    setTimeout(() => {
+        wish.classList.add('breathe');
+        wish.classList.add('glow-active');
+    }, lastLineDelay + 1200);
+}, 80);
+
+    setTimeout(() => startParticles(), firstLineDelay - 2700);
+}
 
     audio.volume = 0;
     audio.currentTime = 0;
@@ -85,9 +95,7 @@ function startCelebration() {
     document.getElementById('confetti').classList.add('active');
     document.getElementById('hearts').classList.add('active');
     document.querySelectorAll('.balloon').forEach(b => b.classList.add('sped-up'));
-
-    startParticles();
-
+          
     celebrationTimer = setTimeout(endCelebration, 35000);   // original 35 seconds
 }
 
@@ -109,7 +117,7 @@ function endCelebration() {
     wish.classList.remove('breathe', 'glow-active');
 }
 
-// Fade audio helper (unchanged)
+// Fade audio helper 
 function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     if (volumeFadeInterval) {
         clearInterval(volumeFadeInterval);
@@ -134,7 +142,7 @@ function fadeVolume(element, start, end, durationMs, callback = () => {}) {
     }, stepTime);
 }
 
-// ── Confetti creation (fixed width, short length variation) ──
+// ── Confetti creation 
 function createConfettiPiece() {
     const el = document.createElement('div');
     el.className = 'confetti-piece' + (celebrationActive ? ' sped-up' : '');
@@ -148,10 +156,10 @@ function createConfettiPiece() {
     el.style.transform = `rotate(${randomRotation}deg)`;
 
     document.getElementById('confetti').appendChild(el);
-    setTimeout(() => el.remove(), 7000);
+    setTimeout(() => el.remove(), 9000);
 }
 
-// ── Heart creation (unchanged) ──
+// ── Heart creation 
 function createHeartPiece() {
     const el = document.createElement('div');
     el.className = 'heart-piece' + (celebrationActive ? ' sped-up' : '');
@@ -161,15 +169,35 @@ function createHeartPiece() {
     el.style.left = Math.random() * 100 + '%';
     el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
     document.getElementById('hearts').appendChild(el);
-    setTimeout(() => el.remove(), 7000);
+    setTimeout(() => el.remove(), 9000);
 }
 
+
 function startParticles() {
+    if (!celebrationActive) return;
+
     const isMobile = window.innerWidth <= 768;
 
-    const confettiIntervalMs = isMobile ? 70 : 45;
-    const heartIntervalMs = isMobile ? 900 : 700;
+    const confettiIntervalMs = isMobile ? 115 : 100;
+    const heartIntervalMs    = isMobile ? 800 : 700;
 
+    // ── Initial burst 
+    const confettiCount = isMobile ? 40 : 70;
+    const heartCount    = isMobile ? 10 : 20;
+
+    for (let i = 0; i < confettiCount; i++) {
+        setTimeout(() => {
+            if (celebrationActive) createConfettiPiece();
+        }, i * 85);
+    }
+
+    for (let i = 0; i < heartCount; i++) {
+        setTimeout(() => {
+            if (celebrationActive) createHeartPiece();
+        }, i * 120);
+    }
+
+    // ── Continuous confetti 
     const confettiInterval = setInterval(() => {
         if (!celebrationActive) {
             clearInterval(confettiInterval);
@@ -178,6 +206,7 @@ function startParticles() {
         createConfettiPiece();
     }, confettiIntervalMs);
 
+    // ── Continuous hearts 
     const heartInterval = setInterval(() => {
         if (!celebrationActive) {
             clearInterval(heartInterval);
@@ -188,14 +217,8 @@ function startParticles() {
 }
 
 
-function getRandomColor() {
-    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
-    return colors[Math.floor(Math.random() * colors.length)];
-}
 
-
-
-// Page visibility (unchanged)
+// Page visibility
 function handleVisibilityChange() {
     if (document.hidden) {
         if (celebrationActive) {
@@ -212,7 +235,7 @@ function handleVisibilityChange() {
 
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
-// Shake detection (unchanged except burst count)
+// Shake detection 
 window.addEventListener('devicemotion', e => {
     if (!shakeUnlocked) return;
     if (!e.accelerationIncludingGravity) return;
@@ -236,7 +259,7 @@ window.addEventListener('devicemotion', e => {
         blowCandles();
 
         // Shake burst - moderate amount
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 130; i++) {
             setTimeout(() => {
                 createConfettiPiece();
                 if (Math.random() > 0.65) createHeartPiece();
