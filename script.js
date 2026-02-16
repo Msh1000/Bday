@@ -27,10 +27,10 @@ function startCelebration() {
     celebrationActive = true;
     
 
-    shakeUnlocked = true;
+    shakeUnlocked = false;
 
-    const hint = document.getElementById("shakeHint");
-    if (hint) hint.style.display = "block";
+    // const hint = document.getElementById("shakeHint");
+    //if (hint) hint.style.display = "block";
 
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
@@ -58,16 +58,12 @@ setTimeout(() => {
         setTimeout(() => {
             line.classList.add('visible');
 
-            // Trigger pulse only if celebration is still active
             if (celebrationActive && card) {
-                // Remove any leftover animation class first (prevents overlap glitches)
                 card.classList.remove('pulse');
 
-                // Small delay helps the CSS animation restart cleanly
                 setTimeout(() => {
                     card.classList.add('pulse');
 
-                    // Auto-remove class after animation completes so it can be re-triggered
                     setTimeout(() => {
                         card.classList.remove('pulse');
                     }, 1600);   // match or slightly longer than animation duration
@@ -222,15 +218,9 @@ function startParticles() {
 function handleVisibilityChange() {
     if (document.hidden) {
         if (celebrationActive) {
-            audio.pause();
-            document.body.classList.remove('party-pulse');
+            location.reload();
         }
-    } else {
-        if (celebrationActive) {
-            audio.play().catch(() => {});
-            document.body.classList.add('party-pulse');
-        }
-    }
+    } 
 }
 
 document.addEventListener("visibilitychange", handleVisibilityChange, false);

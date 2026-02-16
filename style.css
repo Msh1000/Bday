@@ -459,19 +459,36 @@ html {
 @keyframes cardPulsePhase {
   0% {
     transform: scale(1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
     filter: brightness(1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
   }
-  35% {
-    transform: scale(1.035);
-    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.20),
-                0 0 50px rgba(255, 105, 180, 0.55);
+
+  25% {
+    transform: scale(1.04); /* strong peak */
     filter: brightness(1.15);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.22),
+                0 0 50px rgba(255, 105, 180, 0.55);
   }
+
+  45% {
+    transform: scale(1.03);
+    filter: brightness(1.12);
+  }
+
+  65% {
+    transform: scale(1.02);
+    filter: brightness(1.08);
+  }
+
+  85% {
+    transform: scale(1.01);
+    filter: brightness(1.03);
+  }
+
   100% {
     transform: scale(1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
     filter: brightness(1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
   }
 }
 
