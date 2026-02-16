@@ -4,6 +4,7 @@ let volumeFadeInterval = null;
 let shakeUnlocked = false;
 let shakeHintInterval = null;
 let lastShake = 0;
+let firstActivated = false;
 
 const audio = document.getElementById('party-sound');
 
@@ -23,12 +24,17 @@ function getRandomColor() {
 
 
 function startCelebration() {
+    if (firstActivated) {
+        location.reload();
+        firstActivated = false;
+    }
+
     if (celebrationActive) return;
     celebrationActive = true;
-    
+
+    firstActivated = true;
 
     shakeUnlocked = false;
-
     // const hint = document.getElementById("shakeHint");
     //if (hint) hint.style.display = "block";
 
@@ -218,6 +224,7 @@ function startParticles() {
 function handleVisibilityChange() {
     if (document.hidden) {
         if (celebrationActive) {
+            audio.pause();
             location.reload();
         }
     } 
@@ -225,41 +232,3 @@ function handleVisibilityChange() {
 
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
-// Shake detection 
-window.addEventListener('devicemotion', e => {
-    if (!shakeUnlocked) return;
-    if (!e.accelerationIncludingGravity) return;
-
-    const { x, y, z } = e.accelerationIncludingGravity;
-    const speed = Math.sqrt(x*x + y*y + z*z);
-    const now = Date.now();
-
-    if (speed > 18 && now - lastShake > 1200) {
-        lastShake = now;
-
-        const hint = document.getElementById("shakeHint");
-        if (hint) hint.style.display = "none";
-
-        if (shakeHintInterval) clearInterval(shakeHintInterval);
-        shakeHintInterval = setInterval(() => {
-            const hint = document.getElementById("shakeHint");
-            if (hint) hint.style.display = "block";
-        }, 4500);
-
-        blowCandles();
-
-        // Shake burst - moderate amount
-        for (let i = 0; i < 130; i++) {
-            setTimeout(() => {
-                createConfettiPiece();
-                if (Math.random() > 0.65) createHeartPiece();
-            }, i * 40);
-        }
-    }
-});
-
-// Initial setup
-window.addEventListener("load", () => {
-    const hint = document.getElementById("shakeHint");
-    if (hint) hint.style.display = "none";
-});
