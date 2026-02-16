@@ -139,7 +139,7 @@ background: linear-gradient(45deg,
 }
 
 .wish-text.breathe {
-  animation: gentleBreathe 3.3s ease-in-out infinite;
+  animation: gentleBreathe 4.0s ease-in-out infinite;
 }
 
 @keyframes gentleBreathe {
@@ -495,3 +495,4 @@ html {
   0%   { opacity: 1; }    /* full intensity at start */
   100% { opacity: 0; }  /* settle into soft glow */
 }
+
