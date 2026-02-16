@@ -14,22 +14,10 @@ function toggleCelebration() {
     }
 }
 
-function getRandomColor() {
-    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
-    return colors[Math.floor(Math.random() * colors.length)];
-}
-
-
 function startCelebration() {
 
     if (celebrationActive) return;
     celebrationActive = true;
-
-    firstActivated = true;
-
-    shakeUnlocked = false;
-    // const hint = document.getElementById("shakeHint");
-    //if (hint) hint.style.display = "block";
 
     const btn = document.querySelector('.celebration-btn');
     btn.textContent = "Stop Celebration";
@@ -60,7 +48,7 @@ function startCelebration() {
                     if (celebrationActive && card) {
                         card.classList.remove('pulse');
                         setTimeout(() => card.classList.add('pulse'), 20);
-                        setTimeout(() => card.classList.remove('pulse'), 1600);
+                        setTimeout(() => card.classList.remove('pulse'), 2900);
                     }
                 }, index * lineSpacing);
                 lineRevealTimers.push(timer);
@@ -74,6 +62,8 @@ function startCelebration() {
         }, firstLineDelay));
 
         setTimeout(() => startParticles(), firstLineDelay - 2650);
+
+        
     }
 
     audio.volume = 0;
@@ -88,6 +78,7 @@ function startCelebration() {
           
     celebrationTimer = setTimeout(endCelebration, 35000);   // original 35 seconds
 }
+
 
 function endCelebration() {
     if (!celebrationActive) return;
@@ -216,7 +207,10 @@ function startParticles() {
     }, heartIntervalMs);
 }
 
-
+function getRandomColor() {
+    const colors = ['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe','#6c5ce7','#55a3ff','#26de81'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
 
 // Page visibility
 function handleVisibilityChange() {
