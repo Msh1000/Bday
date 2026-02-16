@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
 
 * {
   margin: 0;
@@ -11,15 +10,26 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  background: linear-gradient(45deg, #fefae0, #e0f7fa, #ffe0f0, #f0fff4);
+background: linear-gradient(45deg,
+  #c9bfce,
+  #ffddd2,
+  #efd8f3,
+  #caebf8,
+  #d4d4d4,
+  #fbc4ff
+);
   background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
+  animation: gradientShift 9.5s ease infinite;
 }
 
+
 @keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
+
+
 
 .container {
   min-height: 100vh;
@@ -62,12 +72,18 @@ body {
   margin-bottom: 18px;
   line-height: 1.1;
   text-shadow: 2px 2px 8px rgba(255, 182, 193, 0.5);
-  animation: titleBounce 2.8s ease-in-out infinite alternate;
+  animation: titleBounce 1.75s  ease-out forwards infinite alternate;
+  animation-play-state: paused; /* 👈 paused by default */
 }
 
+.animating .main-title {
+  animation-play-state: running;
+}
+
+
 @keyframes titleBounce {
-  from { transform: scale(1); }
-  to   { transform: scale(1.04); }
+  from { transform: scale(1.01); }
+  to   { transform: scale(1.05); }
 }
 
 .subtitle {
@@ -251,15 +267,6 @@ body {
   }
 }
 
-.dark-theme .balloon::before {
-  background: rgba(255, 255, 255, 0.75);
-}
-
-body.party-pulse .balloon,
-body.dark-theme .balloon {
-  animation: floatUp calc(2.6s + 1.6s * var(--rand)) linear infinite !important;
-}
-
 .confetti, .hearts {
   position: fixed;
   inset: 0;
@@ -276,12 +283,11 @@ body.dark-theme .balloon {
 /* ── Confetti: fixed width, shorter varying length, instant start ── */
 .confetti-piece {
   position: absolute;
-  width: 7px;                        /* fixed width – feels classic */
-  width: 6px;
+  width: 7px;                       
 --length-factor: calc(0.3 + 0.4 * var(--rand-length, 0.8));
-height: calc(7px + 8px * var(--length-factor));               /* ~8–13 px */
-  background: #b0b0b0;               /* fallback */
-  border-radius: 1px;                /* subtle paper edges */
+height: calc(7px + 8px * var(--length-factor));               
+  background: #b0b0b0;               
+  border-radius: 1px;                
   animation: confettiFall 0.5s linear infinite;
   animation-delay: 0s !important;
   will-change: transform, opacity;
@@ -289,7 +295,7 @@ height: calc(7px + 8px * var(--length-factor));               /* ~8–13 px */
 }
 
 .confetti-piece.sped-up {
-  animation-duration: 6s !important;   /* reasonably fast */
+  animation-duration: 6s !important;   
 }
 
 @keyframes confettiFall {
@@ -307,8 +313,8 @@ height: calc(7px + 8px * var(--length-factor));               /* ~8–13 px */
 .heart-piece {
   position: absolute;
   font-size: clamp(12px, 2.8vw, 18px);
-  opacity: 0.38;                    /* lowered from 0.52 → noticeably more subtle */
-  color: rgba(255, 60, 110, 0.82);  /* slightly softer base color */
+  opacity: 0.38;                    
+  color: rgba(255, 60, 110, 0.82); 
   animation: heartFall 0.5s linear infinite;
   will-change: transform, opacity;
 }
@@ -365,6 +371,15 @@ body.dark-theme {
 
 .dark-theme .celebration-btn:hover {
   background: linear-gradient(45deg, #ff0099, #9f00ff);
+}
+
+.dark-theme .balloon::before {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+body.party-pulse .balloon,
+body.dark-theme .balloon {
+  animation: floatUp calc(2.6s + 1.6s * var(--rand)) linear infinite !important;
 }
 
 /* Shake hint */
@@ -456,44 +471,27 @@ html {
   overscroll-behavior: none;
 }
 
-@keyframes cardPulsePhase {
-  0% {
-    transform: scale(1);
-    filter: brightness(1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-  }
-
-  25% {
-    transform: scale(1.04); /* strong peak */
-    filter: brightness(1.15);
-    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.22),
-                0 0 50px rgba(255, 105, 180, 0.55);
-  }
-
-  45% {
-    transform: scale(1.03);
-    filter: brightness(1.12);
-  }
-
-  65% {
-    transform: scale(1.02);
-    filter: brightness(1.08);
-  }
-
-  85% {
-    transform: scale(1.01);
-    filter: brightness(1.03);
-  }
-
-  100% {
-    transform: scale(1);
-    filter: brightness(1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-  }
+.dark-theme .birthday-card.pulse::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  z-index: -1;
+  background: transparent;
+  box-shadow: 
+    0 18px 35px rgba(145, 100, 200, 0.6),  /* darker purple */
+    0 0 25px rgba(200, 160, 255, 0.5);     /* darker pastel glow */
+  opacity: 1; /* start fully visible */
+  animation: shadowBreathe 3.5s ease-in-out forwards infinite; /* smooth continuous fade */
 }
 
-/* Optional: slightly more intense version for dark mode or last line */
-.dark-theme .birthday-card.pulse {
-  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.45),
-              0 0 60px rgba(186, 85, 211, 0.65) !important;
+
+
+
+@keyframes shadowBreathe {
+  0%   { opacity: 1; }    /* full intensity at start */
+  100% { opacity: 0; }  /* settle into soft glow */
 }
