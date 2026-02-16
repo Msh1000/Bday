@@ -1,10 +1,7 @@
 let celebrationActive = false;
 let celebrationTimer = null;
 let volumeFadeInterval = null;
-let shakeUnlocked = false;
-let shakeHintInterval = null;
-let lastShake = 0;
-let firstActivated = false;
+let lineRevealTimers = []; // <-- track wish message timers
 
 const audio = document.getElementById('party-sound');
 
@@ -24,10 +21,6 @@ function getRandomColor() {
 
 
 function startCelebration() {
-    if (firstActivated) {
-        location.reload();
-        firstActivated = false;
-    }
 
     if (celebrationActive) return;
     celebrationActive = true;
@@ -44,9 +37,9 @@ function startCelebration() {
     // ── Wish message animation ──
     const wish = document.getElementById('wishMessage');
     if (wish) {
-        wish.style.display = 'none';
-        wish.classList.add('hidden');
-        wish.classList.remove('breathe', 'glow-active');
+        // clear any old timers if starting again
+        lineRevealTimers.forEach(t => clearTimeout(t));
+        lineRevealTimers = [];
 
         const lines = wish.querySelectorAll('span');
         lines.forEach(line => line.classList.remove('visible'));
@@ -54,39 +47,34 @@ function startCelebration() {
         const lineSpacing = 3500;
         const firstLineDelay = 5500;
 
-setTimeout(() => {
-    wish.style.display = 'block';
-    wish.classList.remove('hidden');
+        lineRevealTimers.push(setTimeout(() => {
+            wish.style.display = 'block';
+            wish.classList.remove('hidden');
 
-    const card = document.querySelector('.birthday-card');
+            const card = document.querySelector('.birthday-card');
 
-    lines.forEach((line, index) => {
-        setTimeout(() => {
-            line.classList.add('visible');
+            lines.forEach((line, index) => {
+                const timer = setTimeout(() => {
+                    line.classList.add('visible');
 
-            if (celebrationActive && card) {
-                card.classList.remove('pulse');
-
-                setTimeout(() => {
-                    card.classList.add('pulse');
-
-                    setTimeout(() => {
+                    if (celebrationActive && card) {
                         card.classList.remove('pulse');
-                    }, 1600);   // match or slightly longer than animation duration
-                }, 20);
-            }
-        }, index * lineSpacing + firstLineDelay);
-    });
+                        setTimeout(() => card.classList.add('pulse'), 20);
+                        setTimeout(() => card.classList.remove('pulse'), 1600);
+                    }
+                }, index * lineSpacing);
+                lineRevealTimers.push(timer);
+            });
 
-    const lastLineDelay = (lines.length - 1) * lineSpacing + firstLineDelay;
-    setTimeout(() => {
-        wish.classList.add('breathe');
-        wish.classList.add('glow-active');
-    }, lastLineDelay + 1200);
-}, 80);
+            const lastLineTimer = setTimeout(() => {
+                wish.classList.add('breathe', 'glow-active');
+            }, (lines.length - 1) * lineSpacing + 1200);
+            lineRevealTimers.push(lastLineTimer);
 
-    setTimeout(() => startParticles(), firstLineDelay - 2700);
-}
+        }, firstLineDelay));
+
+        setTimeout(() => startParticles(), firstLineDelay - 2650);
+    }
 
     audio.volume = 0;
     audio.currentTime = 0;
@@ -105,8 +93,19 @@ function endCelebration() {
     if (!celebrationActive) return;
     celebrationActive = false;
 
-    clearTimeout(celebrationTimer);
 
+    // ── Fast-forward wish lines and clear timers ──
+    const wish = document.getElementById('wishMessage');
+    if (wish) {
+        const lines = wish.querySelectorAll('span');
+        lines.forEach(line => line.classList.add('visible'));
+        wish.classList.add('breathe', 'glow-active');
+    }
+
+    // clear all pending timers to avoid double triggers
+    lineRevealTimers.forEach(t => clearTimeout(t));
+    lineRevealTimers = [];
+    clearTimeout(celebrationTimer);
     document.querySelector('.celebration-btn').textContent = "🎊 Celebrate!";
 
     fadeVolume(audio, 1, 0, 2000, () => audio.pause());
@@ -115,7 +114,6 @@ function endCelebration() {
     document.getElementById('confetti').classList.remove('active');
     document.getElementById('hearts').classList.remove('active');
     document.querySelectorAll('.balloon').forEach(b => b.classList.remove('sped-up'));
-    const wish = document.getElementById('wishMessage');
     wish.classList.remove('breathe', 'glow-active');
 }
 
@@ -180,11 +178,11 @@ function startParticles() {
 
     const isMobile = window.innerWidth <= 768;
 
-    const confettiIntervalMs = isMobile ? 115 : 100;
+    const confettiIntervalMs = isMobile ? 105 : 90;
     const heartIntervalMs    = isMobile ? 800 : 700;
 
     // ── Initial burst 
-    const confettiCount = isMobile ? 40 : 70;
+    const confettiCount = isMobile ? 35: 70;
     const heartCount    = isMobile ? 10 : 20;
 
     for (let i = 0; i < confettiCount; i++) {
@@ -231,4 +229,6 @@ function handleVisibilityChange() {
 }
 
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+
 
