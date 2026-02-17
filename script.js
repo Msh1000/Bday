@@ -65,7 +65,7 @@ function startCelebration() {
             // After all lines are revealed, add breathing and glow effect
             const lastLineTimer = setTimeout(() => {
                 wish.classList.add('breathe', 'glow-active');
-            }, (lines.length - 1) * lineSpacing + 1200);
+            }, (lines.length - 1) * lineSpacing + 3500);
             lineRevealTimers.push(lastLineTimer);
 
         }, firstLineDelay));
@@ -213,8 +213,8 @@ function getRandomColor() {
 function handleVisibilityChange() {
     if (document.hidden) {
         if (celebrationActive) {
-            audio.pause();
-            location.reload();
+           // audio.pause();
+            //location.reload();
         }
     } 
 }

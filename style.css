@@ -72,8 +72,8 @@ background: linear-gradient(45deg,
   margin-bottom: 18px;
   line-height: 1.1;
   text-shadow: 2px 2px 8px rgba(255, 182, 193, 0.5);
-  animation: titleBounce 1.75s  ease-out forwards infinite alternate;
-  animation-play-state: paused; /* 👈 paused by default */
+  animation: titleBounce 1.75s   ease-out infinite alternate;
+  animation-play-state: paused; /* paused by default */
 }
 
 .animating .main-title {
@@ -81,10 +81,12 @@ background: linear-gradient(45deg,
 }
 
 
+
 @keyframes titleBounce {
-  from { transform: scale(1.01); }
-  to   { transform: scale(1.05); }
+  0%   { ransform: scale(1); }    
+  100% { transform: scale(1.04); } 
 }
+
 
 .subtitle {
   font-size: clamp(1.1rem, 3.8vw, 1.65rem);
@@ -120,7 +122,7 @@ background: linear-gradient(45deg,
   left: 50%;
   transform: translateX(-50%);
   font-size: clamp(1.8rem, 5vw, 3rem);
-  animation: candleFlicker 1.6s ease-in-out infinite alternate;
+  animation: candleFlicker 1.8s ease-in-out infinite alternate;
 }
 
 @keyframes candleFlicker {
@@ -139,17 +141,17 @@ background: linear-gradient(45deg,
 }
 
 .wish-text.breathe {
-  animation: gentleBreathe 4.0s ease-in-out infinite;
+  animation: gentleBreathe 3.29s ease-in-out infinite;
 }
 
 @keyframes gentleBreathe {
   0%, 100% {
     transform: scale(1);
-    filter: brightness(1);
+    filter: brightness(1.1);
   }
   50% {
-    transform: scale(1.02);
-    filter: brightness(1.2);
+    transform: scale(1.025);
+    filter: brightness(1.25);
   }
 }
 
@@ -285,10 +287,10 @@ background: linear-gradient(45deg,
   position: absolute;
   width: 7px;                       
 --length-factor: calc(0.3 + 0.4 * var(--rand-length, 0.8));
-height: calc(7px + 8px * var(--length-factor));               
+  height: calc(7px + 8px * var(--length-factor));               
   background: #b0b0b0;               
   border-radius: 1px;                
-  animation: confettiFall 0.5s linear infinite;
+  animation: confettiFall 0.45s linear infinite;
   animation-delay: 0s !important;
   will-change: transform, opacity;
   transform-origin: center;
@@ -489,10 +491,7 @@ html {
 }
 
 
-
-
 @keyframes shadowBreathe {
   0%   { opacity: 1; }    /* full intensity at start */
   100% { opacity: 0; }  /* settle into soft glow */
 }
-
