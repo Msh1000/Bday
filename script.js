@@ -213,13 +213,14 @@ function getRandomColor() {
 function handleVisibilityChange() {
     if (document.hidden) {
         if (celebrationActive) {
-           // audio.pause();
-            //location.reload();
+           audio.pause();
+            location.reload();
         }
     } 
 }
 // Listen for visibility change to handle tab switching
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
 
 
 
