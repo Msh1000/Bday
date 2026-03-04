@@ -1,4 +1,4 @@
- let celebrationActive = false;
+let celebrationActive = false;
         let celebrationTimer = null;
         let volumeFadeInterval = null;
         let lineRevealTimers = [];
