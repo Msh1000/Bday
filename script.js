@@ -115,7 +115,12 @@ let celebrationActive = false;
             el.style.left = Math.random() * 100 + '%';
             el.style.backgroundColor = getRandomColor();
             const randLength = Math.random();
+            const randWidth = Math.random();
+            const isCircle = Math.random() > 0.5;
             el.style.setProperty('--length-factor', randLength);
+            el.style.setProperty('--width-factor', randWidth);
+            el.style.setProperty('--border-radius', isCircle ? '50%' : '2px');
+            el.style.setProperty('--rand-duration', Math.random());
             el.style.transform = `rotate(${Math.random() * 360}deg)`;
             document.getElementById('confetti').appendChild(el);
             setTimeout(() => el.remove(), 9500);
@@ -137,7 +142,7 @@ let celebrationActive = false;
             if (!celebrationActive) return;
 
             const isMobile = window.innerWidth <= 768;
-            const confettiCount = isMobile ? 38 : 68;
+            const confettiCount = isMobile ? 45 : 80;
             const heartCount = isMobile ? 12 : 22;
 
             for (let i = 0; i < confettiCount; i++) {
@@ -150,7 +155,7 @@ let celebrationActive = false;
             const confettiInterval = setInterval(() => {
                 if (!celebrationActive) { clearInterval(confettiInterval); return; }
                 createConfettiPiece();
-            }, isMobile ? 118 : 95);
+            }, isMobile ? 100 : 80);
 
             const heartInterval = setInterval(() => {
                 if (!celebrationActive) { clearInterval(heartInterval); return; }
@@ -159,7 +164,7 @@ let celebrationActive = false;
         }
 
         function getRandomColor() {
-            const colors = ['#ff4d94', '#ff8fab', '#ffb3d1', '#e6c3ff', '#ff6ec4', '#ff99cc', '#f8a5c2', '#c78cff', '#ff80ab', '#db7093'];
+            const colors = ['#ff4d94', '#ff8fab', '#ffb3d1', '#e6c3ff', '#ff6ec4', '#ff99cc', '#f8a5c2', '#c78cff', '#ff80ab', '#db7093', '#ffd700', '#00ff00'];
             return colors[Math.floor(Math.random() * colors.length)];
         }
 
@@ -173,4 +178,11 @@ let celebrationActive = false;
 
         document.addEventListener('keydown', e => {
             if (e.key === "Escape" && celebrationActive) endCelebration();
+        });
+
+        // New: Add touch event for cake to start celebration on mobile
+        document.querySelector('.cake').addEventListener('touchstart', () => {
+            if (!celebrationActive) {
+                startCelebration();
+            }
         });
