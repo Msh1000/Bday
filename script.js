@@ -2,7 +2,7 @@
 // COUNTDOWN – completely remove overlay when date reached
 // ────────────────────────────────────────────────
 
-const TARGET_DATE = new Date('2026-03-15T00:00:00+02:00'); // SAST
+const TARGET_DATE = new Date('2026-02-15T00:00:00+02:00'); // SAST
 
 function checkDateAndHideCountdown() {
     const now = new Date();
@@ -227,5 +227,3 @@ document.addEventListener('keydown', e => {
 document.querySelector('.cake')?.addEventListener('touchstart', () => {
     if (!celebrationActive) startCelebration();
 });
-
-
