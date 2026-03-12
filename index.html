@@ -1,39 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>🎉 Happy Birthday! 🎂</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes:wght@400&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <audio id="party-sound" src="party.mp3" preload="auto"></audio>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="balloons">
-        <div class="balloon" style="--i:1; --rand:0.3; --delay:0s; background:#ff4d94;"></div>
-        <div class="balloon" style="--i:2; --rand:0.7; --delay:1.2s; background:#ff8fab;"></div>
-        <div class="balloon" style="--i:3; --rand:0.4; --delay:2.8s; background:#ffb3d1;"></div>
-        <div class="balloon" style="--i:4; --rand:0.85; --delay:0.6s; background:#e6c3ff;"></div>
-        <div class="balloon" style="--i:5; --rand:0.25; --delay:3.4s; background:#ff6ec4;"></div>
-        <div class="balloon" style="--i:6; --rand:0.65; --delay:1.8s; background:#ff99cc;"></div>
-        <div class="balloon" style="--i:7; --rand:0.5; --delay:4.2s; background:#f8a5c2;"></div>
-        <div class="balloon" style="--i:8; --rand:0.9; --delay:0.4s; background:#c78cff;"></div>
-        <div class="balloon" style="--i:9; --rand:0.35; --delay:5.1s; background:#ff80ab;"></div>
-        <div class="balloon" style="--i:10; --rand:0.75; --delay:2.5s; background:#db7093;"></div>
-    </div>
-
-    <div class="confetti" id="confetti"></div>
-    <div class="hearts" id="hearts"></div>
 
     <div class="container">
+        <!-- Birthday Card – always present underneath -->
         <div class="birthday-card">
             <h1 class="main-title">Happy Birthday! 💕</h1>
             <p class="subtitle">Wishing you all the happiness and joy that your heart can hold! ✨</p>
-            
+
             <div class="cake-container">
                 <div class="cake">🎂</div>
             </div>
-            
+
             <p class="wish-text hidden" id="wishMessage">
                 <span>I’m really grateful for you 🤍</span>
                 <span>You make ordinary days feel special ✨</span>
@@ -46,7 +35,34 @@
                 Celebrate With Me!
             </button>
         </div>
+
+        <!-- Countdown Overlay -->
+        <div class="countdown-overlay" id="countdownOverlay">
+            <h1 class="countdown-title">Almost there... 🎂</h1>
+            <div class="countdown-timer" id="countdown">...</div>
+            <p class="countdown-note">The celebration unlocks on March 15th 💕</p>
+        </div>
+
+        <!-- Floating layers -->
+        <div class="balloons">
+            <div class="balloon" style="--i:1; --rand:0.3; --delay:0s; background:#ff4d94;"></div>
+            <div class="balloon" style="--i:2; --rand:0.7; --delay:1.2s; background:#ff8fab;"></div>
+            <div class="balloon" style="--i:3; --rand:0.4; --delay:2.8s; background:#ffb3d1;"></div>
+            <div class="balloon" style="--i:4; --rand:0.85; --delay:0.6s; background:#e6c3ff;"></div>
+            <div class="balloon" style="--i:5; --rand:0.25; --delay:3.4s; background:#ff6ec4;"></div>
+            <div class="balloon" style="--i:6; --rand:0.65; --delay:1.8s; background:#ff99cc;"></div>
+            <div class="balloon" style="--i:7; --rand:0.5; --delay:4.2s; background:#f8a5c2;"></div>
+            <div class="balloon" style="--i:8; --rand:0.9; --delay:0.4s; background:#c78cff;"></div>
+            <div class="balloon" style="--i:9; --rand:0.35; --delay:5.1s; background:#ff80ab;"></div>
+            <div class="balloon" style="--i:10; --rand:0.75; --delay:2.5s; background:#db7093;"></div>
+        </div>
+
+        <div class="confetti" id="confetti"></div>
+        <div class="hearts" id="hearts"></div>
     </div>
+
+    <audio id="party-sound" src="party.mp3" preload="auto"></audio>
+
     <script src="script.js"></script>
 </body>
 </html>
