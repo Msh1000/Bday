@@ -228,3 +228,14 @@ document.querySelector('.cake')?.addEventListener('touchstart', () => {
     if (!celebrationActive) startCelebration();
 });
 
+
+window.addEventListener('load', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('bypass') || urlParams.has('unlock')) {
+        const overlay = document.getElementById('countdownOverlay');
+        if (overlay) {
+            overlay.remove();
+            console.log("Countdown bypassed via secret URL param");
+        }
+    }
+});
