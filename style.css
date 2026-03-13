@@ -425,18 +425,12 @@
             touch-action: manipulation;
         }
         
-        /* Your exact original CSS — line-for-line identical to what you pasted */
-
-
-
-/* ... every single rule exactly as you provided ... */
-
-/* Only these four new rules added at the end — nothing else touched */
+        
 
 .countdown-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 209, 220, 0.70);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
@@ -470,3 +464,4 @@
     max-width: 85%;
     text-align: center;
 }
+
