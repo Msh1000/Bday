@@ -430,7 +430,7 @@
 .countdown-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(255, 209, 220, 0.50);
+    background: rgba(255, 239, 241, 0.30);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
